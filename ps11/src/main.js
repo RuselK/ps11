@@ -28,6 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
  }
 
 
+ const phone = document.getElementById("phone")
+ const email = document.getElementById("email")
+
+ phone.addEventListener("click", () => {
+   phone.textContent = "+7 (903) 200-30-36"
+   phone.className = "text-blue-500"
+ })
+
+ email.addEventListener("click", () => {
+   email.textContent = "info-ps11@mail.ru"
+   email.className = "text-blue-500"
+ })
+
  updateYear()
  handleResize()
 })
