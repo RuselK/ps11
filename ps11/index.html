@@ -7,27 +7,257 @@
     <title>Замеры дебита нефтяных скважин - ООО "Полярсервис"</title>
   </head>
   <body>
+    <!-- Header -->
     <header class="fixed w-full bg-white shadow-md z-50">
-        <nav class="container mx-auto px-6 py-3">
-            <div class="flex justify-between items-center">
-                <a href="#" class="text-3xl font-bold text-primary">Полярсервис</a>
-                <div class="hidden md:flex space-x-4">
-                    <a href="#about" class="text-gray-800 hover:text-secondary transition">About</a>
-                    <a href="#services" class="text-gray-800 hover:text-secondary transition">Services</a>
-                    <a href="#contact" class="text-gray-800 hover:text-secondary transition">Contact</a>
-                </div>
-                <button id="menu-toggle" class="md:hidden">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
-        </nav>
+      <nav class="container mx-auto px-6 py-3">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+          <div class="flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold text-primary">ООО Полярсервис</a>
+            <button id="menu-toggle" class="md:hidden">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+          <div id="menu" class="hidden md:flex md:items-center md:space-x-4 mt-4 md:mt-0">
+            <a href="#about" class="block mt-2 md:mt-0 text-gray-800 hover:text-secondary transition">О нас</a>
+            <a href="#services" class="block mt-2 md:mt-0 text-gray-800 hover:text-secondary transition">Документация</a>
+            <a href="#contact" class="block mt-2 md:mt-0 text-gray-800 hover:text-secondary transition">Назначение</a>
+            <a href="#contact" class="block mt-2 md:mt-0 text-gray-800 hover:text-secondary transition">Отзывы</a>
+            <a href="#contact" class="block mt-2 md:mt-0 text-gray-800 hover:text-secondary transition">Контакты</a>
+          </div>
+        </div>
+      </nav>
     </header>
 
-    <div id="app">
-      <h1>Welcome to Our Landing Page</h1>
-    </div>
+    <main>
+      <!-- Hero -->
+      <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-primary to-blue-900 opacity-75"></div>
+        <div id="particles" class="absolute inset-0"></div>
+        <div class="relative z-10 text-center text-white">
+          <h1 class="text-5xl md:text-6xl font-bold mb-4">
+            Тест-сепаратор для нефтяников
+          </h1>
+          <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            Блочная замерная установка – тест сепаратор «БЗУ-Тест Сепаратор» предназначена для оперативного измерения продукции нефтегазовых скважин.
+          </p>
+          <a href="#contact" class="bg-secondary text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition">
+            Связаться с нами
+          </a>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">
+            Почему стоит выбрать наш Тест-сепаратор?
+          </h2>
+          <div class="md:pl-12">
+            <p class="text-lg text-gray-700 mb-6 max-w-3xl mx-auto text-center">
+              Установка выгодно отличается от аналогов, что делает ее незаменимой при контроле разработки месторождений, испытаний после бурения, особенно в труднодоступных районах Крайнего Севера.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advantages -->
+      <section id="advantages" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">Наши преимущества</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="flex flex-col items-center text-center">
+              <svg class="text-secondary mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" >
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+              </svg>
+              <h3 class="text-2xl font-semibold mb-2">Минимальное время на мобилизацию</h3>
+              <p class="text-gray-600">
+                Установка находится в Усинском районе п. Парма
+              </p>
+              <p class="text-gray-600">
+                Высокая мобильность установки за счет малых размеров и веса установки
+              </p>
+            </div>
+            <div class="flex flex-col items-center text-center">
+              <svg class="text-secondary mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4.5V19a1 1 0 0 0 1 1h15M7 10l4 4 4-4 5 5m0 0h-3.207M20 15v-3.207"/>
+              </svg>
+              <h3 class="text-2xl font-semibold mb-2">Невысокие эксплуатационные затраты</h3>
+              <p class="text-gray-600">
+                Невысокие эксплуатационные расходы и ремонтопригодность в полевых условиях за счет использования механических изделий;
+              </p>
+              <p class="text-gray-600">
+                Оборудование отечественных производителей с многолетней положительной историей в нефтегазовой отрасли
+              </p>
+            </div>
+            <div class="flex flex-col items-center text-center">
+              <svg class="text-secondary mb-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5713 5h7v9h-7m-6.00001-4-3 4.5m3-4.5v5m0-5h3.00001m0 0h5m-5 0v5m-3.00001 0h3.00001m-3.00001 0v5m3.00001-5v5m6-6 2.5 6m-3-6-2.5 6m-3-14.5c0 .82843-.67158 1.5-1.50001 1.5-.82843 0-1.5-.67157-1.5-1.5s.67157-1.5 1.5-1.5 1.50001.67157 1.50001 1.5Z"/>
+              </svg>
+              <h3 class="text-2xl font-semibold mb-2">Взаимовыгодное сотрудничество</h3>
+              <p class="text-gray-600">
+                Обслуживание установки не требует специальных навыков и типично для характера работ операторов по добыче нефти нефтяных промыслов.
+              </p>
+              <p class="text-gray-600">
+                Аренда установки - от 5 тыс. руб сутки.
+              </p>
+              <p class="text-gray-600">
+                Продажа - цена по запросу.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Purpose -->
+      <section id="purpose" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">Назначение тест-сепаратора</h2>
+          <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 md:pl-12 p-4">
+              <p class="text-lg text-gray-700 font-bold mb-2">
+                Замер дебита нефтяных скважин – это комплекс работ, который включает в себя:
+              </p>
+              <ul class="list-disc list-inside text-gray-700 mb-4">
+                <li>
+                  фонтанных и оборудованных глубинным насосным оборудованием (ГНО);
+                </li>
+                <li>
+                  работающих (циклически) при настройке режима работы ГНО;
+                </li>
+                <li>
+                  в отдаленных районах с получением результатов проб обводненности прямым методом на поточном пробоотборнике;
+                </li>
+                <li>
+                  при подготовительных работах к переводу на механизированную добычу;
+                </li>
+              </ul>
+            </div>
+            <div class="md:w-1/2 mb-8 md:mb-0">
+              <img src="/public/imgs/Параметры-БЗУ.jpg" alt="Oil rig" class="rounded-lg shadow-xl">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Construction -->
+      <section id="construction" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">Конструкция тест-сепаратора</h2>
+          <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+              <img src="/public/imgs/БЗУ-тест-сепаратор.png" alt="Oil rig" class="rounded-lg shadow-xl">
+            </div>
+            <div class="md:w-1/2 md:pl-12 p-4">
+              <p class="text-lg text-gray-700 font-bold mb-2">
+                Конструктивно установка состоит из технологического блока изготовленного из металлических панелей типа «сэндвич», где установлено:
+              </p>
+              <ul class="list-disc list-inside text-gray-700 mb-4">
+                <li>
+                  гидроциклонный сепаратор;
+                </li>
+                <li>
+                  средства измерения по жидкости, газу с автоматическим пробоотборником;
+                </li>
+                <li>
+                  технологические трубопроводы с запорной, предохранительной, регулирующей арматурой;
+                </li>
+                <li>
+                  освещение, вентиляция и обогрев.
+                </li>
+                <li>
+                  Сверху на блоке расположены такелажные узлы, снизу посадочная рама для монтажа и крепления на платформе (шасси).
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Documentation -->
+      <section id="documentation" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">Разрешительная документация</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="service-card bg-white rounded-lg shadow-md p-6 cursor-pointer transform transition duration-300 hover:scale-105">
+              <img src="/public/imgs/Декларация-ЕАЭС_-БЗУ-Тест-сепаратора-1160x1536.jpg" alt="Exploration icon" class="mx-auto mb-4">
+              <h3 class="text-1xl font-semibold text-center mb-4">
+                Декларация о соответствии № ЕАЭС N RU Д-RU.РА03.В.46045/23
+              </h3>
+            </div>
+            <div class="service-card bg-white rounded-lg shadow-md p-6 cursor-pointer transform transition duration-300 hover:scale-105">
+              <img src="/public/imgs/Сертификат-ЕАЭС_на-тип-БЗУ-Тест-сепаратора-1-1159x1536.jpg" alt="Production icon" class="mx-auto mb-4">
+              <h3 class="text-1xl font-semibold text-center mb-4">
+                Сертификат на тип продукции № ЕАЭС RU СТ-RU.НВ54.00632
+              </h3>
+            </div>
+            <div class="service-card bg-white rounded-lg shadow-md p-6 cursor-pointer transform transition duration-300 hover:scale-105">
+              <img src="/public/imgs/ТУ-на-Тест-сепаратор-БЗУ-1-1118x1536.jpg" alt="Distribution icon" class="mx-auto mb-4">
+              <h3 class="text-1xl font-semibold text-center mb-4">
+                ТУ 28.99.39-001-81875430-2023 «Блочные замерные установки-тест сепараторы (БЗУ-тест сепараторы)»
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section id="stats" class="py-20 bg-primary text-white">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-white mb-12">Отзыв Нефтяников</h2>
+          <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 md:pl-12 p-4">
+              <p class="text-lg text-white font-bold mb-6">
+                Блочная замерная установка – тест сепаратор «БЗУ-Тест Сепаратор» успешно применялась на месторождениях:
+              </p>
+              <p class="text-lg text-white mb-6">
+                <span class="font-bold">Южно-Ошское месторождение</span> – фонд скважин с высоковязкой и парафинистой нефтью с дебитами по жидкости 100-230 м3/сутки;
+              </p>
+              <p class="text-lg text-white mb-6">
+                <span class="font-bold">Мусюшорском месторождении</span> – фонд скважин с легкой нефтью дебитами по жидкости 30-50 м3/сутки.
+              </p>
+            </div>
+            <div class="md:w-1/2 mb-8 md:mb-0">
+              <img src="/public/imgs/Нобель-Ойл-о-БЗУ-Тест-сепаратора.jpg" alt="Oil rig" class="rounded-lg shadow-xl h-96 m-auto">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="text-4xl font-bold text-center text-primary mb-12">Свяжитесь с нами</h2>
+          <div class="max-w-lg mx-auto">
+            <form id="contact-form" class="space-y-6">
+              <div>
+                <label for="name" class="block text-gray-700 font-semibold mb-2">Name</label>
+                <input type="text" id="name" name="name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
+                <input type="email" id="email" name="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
+                <textarea id="message" name="message" required rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-secondary text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-white py-8">
+      <div class="container mx-auto px-6 text-center">
+        <p>&copy; <span id="year">2025</span> ООО "Полярсервис"</p>
+        <p>Все права защищены.</p>
+      </div>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
