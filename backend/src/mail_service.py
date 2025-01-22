@@ -1,4 +1,5 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+from fastapi_mail.errors import ConnectionErrors
 from pydantic import BaseModel
 
 from src.config import config, logger
@@ -37,15 +38,18 @@ MESSAGE_BODY = """
 
 
 async def send_email(message: Message):
-    logger.debug("Sending email.")
+    logger.debug("Sending email...")
     message = MessageSchema(
         subject=message.subject,
         body=message.body,
         recipients=message.recipients,
         subtype=MessageType.html,
     )
-    # await fm.send_message(message)
-    logger.debug("Email sent.")
+    try:
+        await fm.send_message(message)
+        logger.debug("Email sent.")
+    except ConnectionErrors as e:
+        logger.error(f"Error sending email: {e}")
 
 
 async def resend_form_data_to_email(
@@ -54,7 +58,7 @@ async def resend_form_data_to_email(
     email: str,
     message: str = None,
 ):
-    logger.debug("Resending form data to email.")
+    logger.debug("Resending form data to email...")
     message = Message(
         subject="Новое сообщение",
         body=MESSAGE_BODY.format(
