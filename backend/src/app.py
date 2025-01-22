@@ -41,10 +41,7 @@ async def send_form(
     request: Request,
 ):
     client_ip = request.client.host
-    forwarded_ip = request.headers.get("X-Forwarded-For")
-    real_ip = request.headers.get("X-Real-IP")
-    logger.debug(f"Received request to send form from IP: {client_ip}, {forwarded_ip}, {real_ip}")
-    logger.debug(f"{request.headers}")
+    logger.debug(f"Received request to send form from IP: {client_ip}")
     if not await check_captcha(token, client_ip):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
