@@ -28,7 +28,7 @@ services:
   nginx:
     build: ./nginx/
     ports:
-      - 88:80
+      - 8080:80
     volumes:
       - ./nginx/logs:/var/log/nginx
       - static:/static
