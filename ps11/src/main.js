@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       popover.classList.remove("hidden");
       return;
     }
-    axios.post("http://localhost:8000/api/send_form", {
+    axios.post("/api/send_form", {
       name: contactForm.name.value,
       phone: contactForm.phone.value,
       email: contactForm.email.value,

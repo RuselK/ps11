@@ -40,11 +40,12 @@ async def send_form(
     background_tasks: BackgroundTasks,
     request: Request,
 ):
-    print(request.client.host)
-    forwarded_ip = request.headers.get("x-forwarded-for")
-    print(f"Forwarded IP: {forwarded_ip}")
-    logger.debug("Received request to send form.")
-    if not await check_captcha(token, request.client.host):
+    client_ip = request.client.host
+    forwarded_ip = request.headers.get("X-Forwarded-For")
+    real_ip = request.headers.get("X-Real-IP")
+    logger.debug(f"Received request to send form from IP: {client_ip}, {forwarded_ip}, {real_ip}")
+    logger.debug(f"{request.headers}")
+    if not await check_captcha(token, client_ip):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid captcha",

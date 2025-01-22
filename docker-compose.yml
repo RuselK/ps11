@@ -1,0 +1,39 @@
+name: ps11-docker
+
+networks:
+  ps11-network:
+    driver: bridge
+
+volumes:
+  static:
+
+services:
+  backend:
+    build: ./backend/
+    volumes:
+      - ./backend/logs:/app/logs
+    ports:
+      - 8000:8000
+    env_file: .env
+    networks:
+      - ps11-network
+    restart: always
+  
+  frontend:
+    build: ./ps11/
+    command: cp -r /app/dist/. /static/
+    volumes:
+      - static:/static
+
+  nginx:
+    build: ./nginx/
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+      - static:/static
+    env_file: .env
+    depends_on:
+      - backend
+    networks:
+      - ps11-network
