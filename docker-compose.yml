@@ -37,3 +37,4 @@ services:
       - backend
     networks:
       - ps11-network
+    restart: always 
