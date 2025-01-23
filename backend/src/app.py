@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from src.config import config, logger
 from src.mail_service import resend_form_data_to_email
 from src.captcha_service import check_captcha
+from src.utils import mask_ip
 
 
 app = FastAPI(
@@ -41,7 +42,9 @@ async def send_form(
     request: Request,
 ):
     client_ip = request.client.host
-    logger.debug(f"Received request to send form from IP: {client_ip}")
+    logger.debug(
+        f"Received request to send form from IP: {mask_ip(client_ip)}"
+    )
     if not await check_captcha(token, client_ip):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
