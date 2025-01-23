@@ -6,14 +6,14 @@ from src.config import config, logger
 
 
 mail_config = ConnectionConfig(
-    MAIL_USERNAME=config.EMAIL_HOST_USER,
-    MAIL_PASSWORD=config.EMAIL_HOST_PASSWORD,
-    MAIL_FROM=config.EMAIL_HOST_USER,
-    MAIL_PORT=config.EMAIL_PORT,
-    MAIL_SERVER=config.EMAIL_HOST,
-    MAIL_FROM_NAME=config.EMAIL_FROM_NAME,
-    MAIL_STARTTLS=config.EMAIL_STARTTLS,
-    MAIL_SSL_TLS=config.EMAIL_SSL_TLS,
+    MAIL_USERNAME=config.MAIL_USERNAME,
+    MAIL_PASSWORD=config.MAIL_PASSWORD,
+    MAIL_FROM=config.MAIL_FROM,
+    MAIL_PORT=config.MAIL_PORT,
+    MAIL_SERVER=config.MAIL_SERVER,
+    MAIL_FROM_NAME=config.MAIL_FROM_NAME,
+    MAIL_STARTTLS=config.MAIL_STARTTLS,
+    MAIL_SSL_TLS=config.MAIL_SSL_TLS,
     USE_CREDENTIALS=config.USE_CREDENTIALS,
     VALIDATE_CERTS=config.VALIDATE_CERTS,
 )
@@ -29,7 +29,7 @@ class Message(BaseModel):
 
 
 MESSAGE_BODY = """
-<h1>Получено новое сообщение</h1>
+<h1>Получены новые данные с формы</h1>
 <p>Имя: {name}</p>
 <p>Телефон: {phone}</p>
 <p>Email: {email}</p>
