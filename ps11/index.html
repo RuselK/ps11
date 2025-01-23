@@ -336,6 +336,11 @@
               </a>
             </li>
             <li>
+              <a href="/cookie_info.html" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-secondary transition">
+                Информация о сборе «cookie»
+              </a>
+            </li>
+            <li>
               <a href="/media/Карточка_ООО_Полярсервис.pdf" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-secondary transition">
                 Карточка контрагента
               </a>
@@ -355,6 +360,31 @@
         </button>
       </div>
     </div>
-    <script type="module" src="/src/main.js"></script>
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" 
+        class="fixed bottom-4 left-1/2 transform -translate-x-1/2 
+                bg-gray-100 text-gray-800 px-4 py-3 mx-4 rounded-md shadow-md 
+                max-w-md w-full z-50 hidden">
+      <div class="flex flex-col md:flex-row items-start md:items-center">
+        <p class="flex-1 mr-4">
+          Мы используем cookie. 
+          Продолжая пользоваться сайтом, вы соглашаетесь на использование cookie.
+          <a href="/cookie_info.html" 
+            class="underline"
+          >
+            Подробнее
+          </a>
+        </p>
+        <button id="cookie-accept" 
+                class="mt-2 md:mt-0 bg-secondary text-white px-4 py-2 
+                      rounded hover:bg-opacity-90 transition">
+          Понятно
+        </button>
+      </div>
+    </div>
+    <script type="module" src="/src/header.js"></script>
+    <script type="module" src="/src/year.js"></script>
+    <script type="module" src="/src/cookie.js"></script>
+    <script type="module" src="/src/form.js"></script>
   </body>
 </html>

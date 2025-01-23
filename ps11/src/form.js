@@ -1,34 +1,6 @@
-import './style.css'
 import axios from 'axios'
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Mobile menu toggle
-  const menuToggle = document.getElementById("menu-toggle")
-  const menu = document.getElementById("menu")
-
-  function toggleMenu() {
-    menu.classList.toggle("hidden")
-  }
-
-  menuToggle.addEventListener("click", toggleMenu)
-
-  // Handle window resize
-  function handleResize() {
-    if (window.innerWidth >= 768) {
-      menu.classList.remove("hidden")
-    } else {
-      menu.classList.add("hidden")
-    }
-  }
-
-  window.addEventListener("resize", handleResize)
-
-  // Update year
-  const year = document.getElementById("year")
-  const updateYear = () => {
-    year.textContent = new Date().getFullYear()
-  }
-
   // Form submission and popover
   const contactForm = document.getElementById("contact-form")
   const closePopover = document.getElementById("close-popover")
@@ -79,7 +51,4 @@ document.addEventListener('DOMContentLoaded', () => {
       popover.classList.add("hidden")
     }
   })
-
-  updateYear()
-  handleResize()
 })
