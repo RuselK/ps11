@@ -18,6 +18,22 @@
     <title>Замеры дебита нефтяных скважин - ООО "Полярсервис"</title>
   </head>
   <body>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      ym(99630678, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+      });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/99630678" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
     <!-- Header -->
     <header class="fixed w-full bg-white shadow-md z-50">
       <nav class="container mx-auto px-6 py-3 xl:px-48">
@@ -242,6 +258,16 @@
           </div>
         </div>
       </section>
+      <section class="py-20 bg-primary text-white">
+        <div class="relative text-center text-white">
+          <a href="/media/ТИЗЕР_БЗУ_ ООО_ПС.pdf"
+            target="_blank" rel="noopener noreferrer"
+            class="bg-secondary text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-opacity-90 transition"
+          >
+            Ознакомиться с документацией
+          </a>
+        </div>
+      </section>
       <!-- Contact -->
       <section id="contact" class="py-20 bg-white">
         <div class="container mx-auto px-6 xl:px-48">
@@ -249,17 +275,23 @@
           <div class="max-w-lg mx-auto">
             <form id="contact-form" class="space-y-6">
               <div>
-                <label for="name" class="block text-gray-700 font-semibold mb-2">Имя<span class="text-red-500">*</span></label>
+                <label for="name" class="block text-gray-700 font-semibold mb-2">
+                  Имя<span class="text-red-500">*</span>
+                </label>
                 <input type="text" id="name" name="name" required
                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
               </div>
               <div>
-                <label for="email" class="block text-gray-700 font-semibold mb-2">Электронная почта<span class="text-red-500">*</span></label>
+                <label for="email" class="block text-gray-700 font-semibold mb-2">
+                  Электронная почта<span class="text-red-500">*</span>
+                </label>
                 <input type="email" id="email" name="email" required
                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
               </div>
               <div>
-                <label for="phone" class="block text-gray-700 font-semibold mb-2">Телефон<span class="text-red-500">*</span></label>
+                <label for="phone" class="block text-gray-700 font-semibold mb-2">
+                  Телефон<span class="text-red-500">*</span>
+                </label>
                 <input type="tel" id="phone" name="phone" required
                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
               </div>
@@ -318,7 +350,7 @@
     <div id="popover" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
       <div class="bg-white p-8 rounded-lg shadow-xl">
         <p id="popover-message" class="mb-4">Ваше сообщение успешно отправлено. Мы свяжемся с вами в ближайшее время.</p>
-        <button id="close-popover" class="bg-secondary text-white px-4 py-2 rounded hover:bg-opacity-90 transition">
+        <button id="close-popover" class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition">
           Закрыть
         </button>
       </div>
