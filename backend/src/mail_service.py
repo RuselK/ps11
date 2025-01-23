@@ -17,15 +17,7 @@ mail_config = ConnectionConfig(
     USE_CREDENTIALS=config.USE_CREDENTIALS,
     VALIDATE_CERTS=config.VALIDATE_CERTS,
 )
-
-
 fm = FastMail(mail_config)
-
-
-class Message(BaseModel):
-    subject: str
-    body: str
-    recipients: list[str]
 
 
 MESSAGE_BODY = """
@@ -35,9 +27,19 @@ MESSAGE_BODY = """
 <p>Email: {email}</p>
 <p>Сообщение: {message}</p>
 """
+SUBJECT = "Новые данные с формы"
+
+
+class Message(BaseModel):
+    subject: str
+    body: str
+    recipients: list[str]
 
 
 async def send_email(message: Message):
+    """
+    Send email.
+    """
     logger.debug("Sending email...")
     message = MessageSchema(
         subject=message.subject,
@@ -58,9 +60,12 @@ async def resend_form_data_to_email(
     email: str,
     message: str = None,
 ):
+    """
+    Resend form data to email.
+    """
     logger.debug("Resending form data to email...")
     message = Message(
-        subject="Новое сообщение",
+        subject=SUBJECT,
         body=MESSAGE_BODY.format(
             name=name,
             phone=phone,

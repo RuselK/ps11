@@ -17,7 +17,11 @@ class Config(BaseSettings):
     SMARTCAPTCHA_SERVER_KEY: str
 
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:80",
+        "http://127.0.0.1:80",
+        "http://localhost",
+    ]
     ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     ALLOWED_METHODS: list[str] = ["POST"]
     ALLOWED_HEADERS: list[str] = ["Content-Type"]
@@ -51,6 +55,9 @@ def setup_logging(
     log_format: str,
     log_level: int,
 ):
+    """
+    Setup logging.
+    """
     logger = logging.getLogger(__name__)
     logger.setLevel(log_level)
     file_handler = RotatingFileHandler(
