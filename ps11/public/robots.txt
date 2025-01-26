@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /src/
+Disallow: /imgs/
+Disallow: /media/
+Allow: /index.html
+Allow: /cookie_info.html
+Allow: /media/ТИЗЕР_БЗУ_%20ООО_ПС.pdf
+
+Sitemap: https://ps11.ru/sitemap.xml
