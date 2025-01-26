@@ -1,7 +1,7 @@
 from fastapi import FastAPI, BackgroundTasks, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from src.config import config, logger
 from src.mail_service import resend_form_data_to_email
@@ -29,7 +29,7 @@ app.add_middleware(
 class FormData(BaseModel):
     name: str
     phone: str
-    email: str
+    email: EmailStr
     message: str = None
 
 
