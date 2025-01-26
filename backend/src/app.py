@@ -1,12 +1,11 @@
-from fastapi import FastAPI, BackgroundTasks, status, Request, HTTPException
+from fastapi import FastAPI, BackgroundTasks, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
 
 from src.config import config, logger
 from src.mail_service import resend_form_data_to_email
-from src.captcha_service import check_captcha
-from src.utils import mask_ip
+from src.captcha_service import captcha_dependency
 
 
 app = FastAPI(
@@ -34,22 +33,22 @@ class FormData(BaseModel):
     message: str = None
 
 
-@app.post("/api/send_form", status_code=status.HTTP_204_NO_CONTENT)
+@app.get("/api/health")
+async def health():
+    logger.debug("Received request to check health.")
+    return {"status": "ok"}
+
+
+@app.post(
+    "/api/send_form",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(captcha_dependency)],
+)
 async def send_form(
     form_data: FormData,
-    token: str,
     background_tasks: BackgroundTasks,
-    request: Request,
 ):
-    client_ip = request.client.host
-    logger.debug(
-        f"Received request to send form from IP: {mask_ip(client_ip)}"
-    )
-    if not await check_captcha(token, client_ip):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid captcha",
-        )
+    logger.debug("Received request to send form.")
     background_tasks.add_task(
         resend_form_data_to_email,
         form_data.name,

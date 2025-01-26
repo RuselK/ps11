@@ -36,7 +36,7 @@ class Message(BaseModel):
     recipients: list[str]
 
 
-async def send_email(message: Message):
+async def send_email(message: Message) -> None:
     """
     Send email.
     """
@@ -59,7 +59,7 @@ async def resend_form_data_to_email(
     phone: str,
     email: str,
     message: str = None,
-):
+) -> None:
     """
     Resend form data to email.
     """
