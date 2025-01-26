@@ -6,7 +6,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
-        cookieInfo: 'cookie_info.html'
+        cookieInfo: 'cookie_info.html',
+        notFound: '404.html'
       },
     }
   }
