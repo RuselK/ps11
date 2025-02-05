@@ -4,10 +4,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { SmartCaptcha } from "@yandex/smart-captcha"
-import axios from "axios"
+import { useAuth } from "@/lib/AuthContext"
 
 export default function LoginForm() {
   const router = useRouter()
+  const { login } = useAuth()
   const {
     register,
     handleSubmit,
@@ -23,7 +24,7 @@ export default function LoginForm() {
     setCaptchaToken("")
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: { username: string; password: string }) => {
     setError("")
     setIsSubmitting(true)
 
@@ -33,28 +34,11 @@ export default function LoginForm() {
       return
     }
 
-    const params = new URLSearchParams()
-    params.append("username", data.username)
-    params.append("password", data.password)
-    params.append("grant_type", "password")
-
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/auth/login?token=${encodeURIComponent(captchaToken)}`,
-        params,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        },
-      )
+      await login(data.username, data.password)
       router.push("/dashboard")
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.detail) {
-        setError(err.response.data.detail)
-      } else {
-        setError("Ошибка при входе. Пожалуйста, попробуйте снова.")
-      }
+      setError("Ошибка при входе. Пожалуйста, попробуйте снова.")
       handleResetCaptcha()
     } finally {
       setIsSubmitting(false)

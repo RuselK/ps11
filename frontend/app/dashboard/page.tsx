@@ -1,62 +1,94 @@
 "use client"
 
-import Link from "next/link"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import axios from "axios"
 import PostList from "@/components/dashboard/PostList"
 import Pagination from "@/components/dashboard/Pagination"
 import ConfirmationModal from "@/components/ConfirmationModal"
-
-const allPosts = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  title: `Blog Post ${i + 1}`,
-  createdAt: new Date(Date.now() - i * 86400000).toISOString().split("T")[0],
-}))
-
-const POSTS_PER_PAGE = 10
+import { useAuth } from "@/lib/AuthContext"
 
 export default function Dashboard() {
+  const [posts, setPosts] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [posts, setPosts] = useState(allPosts.slice(0, POSTS_PER_PAGE))
+  const [totalPages, setTotalPages] = useState(1)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [postToDelete, setPostToDelete] = useState<number | null>(null)
+  const router = useRouter()
+  const { isAuthenticated, isLoading, logout } = useAuth()
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * POSTS_PER_PAGE
-    const endIndex = startIndex + POSTS_PER_PAGE
-    setPosts(allPosts.slice(startIndex, endIndex))
-  }, [currentPage])
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login")
+    } else if (isAuthenticated) {
+      fetchPosts()
+    }
+  }, [isLoading, isAuthenticated, router])
 
-  const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE)
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/posts/?pageNumber=${currentPage}&pageSize=10`)
+      setPosts(response.data.items)
+      setTotalPages(response.data.pages)
+    } catch (error) {
+      console.error("Error fetching posts:", error)
+    }
+  }
 
   const handleDeleteClick = (postId: number) => {
     setPostToDelete(postId)
     setIsDeleteModalOpen(true)
   }
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (postToDelete) {
-      // Here you would typically send a delete request to your backend
-      console.log(`Deleting post with id: ${postToDelete}`)
-
-      // Update the local state to remove the deleted post
-      setPosts(posts.filter((post) => post.id !== postToDelete))
-
-      // Close the modal
+      try {
+        await axios.delete(`/api/posts/${postToDelete}`)
+        fetchPosts()
+      } catch (error) {
+        console.error("Error deleting post:", error)
+      }
       setIsDeleteModalOpen(false)
       setPostToDelete(null)
     }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push("/login")
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!isAuthenticated) {
+    return null
   }
 
   return (
     <div className="px-4 py-6 sm:px-0">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">Posts</h2>
-        <Link
-          href="/dashboard/new-post"
-          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          New Post
-        </Link>
+        <div>
+          <Link
+            href="/dashboard/new-post"
+            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2"
+          >
+            New Post
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Logout
+          </button>
+        </div>
       </div>
       <PostList posts={posts} onDeleteClick={handleDeleteClick} />
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />

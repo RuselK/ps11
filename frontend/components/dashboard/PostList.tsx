@@ -4,7 +4,8 @@ import { Trash2, PenSquare } from "lucide-react"
 type Post = {
   id: number
   title: string
-  createdAt: string
+  created_at: string
+  is_published: boolean
 }
 
 type PostListProps = {
@@ -27,7 +28,10 @@ export default function PostList({ posts, onDeleteClick }: PostListProps) {
                   >
                     {post.title}
                   </Link>
-                  <p className="mt-1 text-sm text-gray-500">Created on {post.createdAt}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Created on {new Date(post.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">Status: {post.is_published ? "Published" : "Draft"}</p>
                 </div>
               </div>
               <div className="ml-5 flex-shrink-0 flex space-x-2">

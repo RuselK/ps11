@@ -1,6 +1,16 @@
-import Link from "next/link"
+"use client"
+
+import { useRouter } from "next/navigation"
+import axios from "axios"
 
 export default function Header() {
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await axios.post("http://127.0.0.1:8000/api/auth/logout")
+    router.push("/login")
+  }
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,12 +21,12 @@ export default function Header() {
             </div>
           </div>
           <div className="flex items-center">
-            <Link
-              href="/logout"
+            <button
+              onClick={handleLogout}
               className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Logout
-            </Link>
+              Выйти
+            </button>
           </div>
         </div>
       </div>

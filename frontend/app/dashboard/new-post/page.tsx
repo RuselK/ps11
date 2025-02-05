@@ -1,15 +1,38 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import Link from "next/link"
+import axios from "axios"
 import PostForm from "@/components/dashboard/PostForm"
+import { useAuth } from "@/lib/AuthContext"
+import { useEffect } from "react"
 
 export default function NewPost() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login")
+    }
+  }, [isLoading, isAuthenticated, router])
+
   const handleSubmit = async (data: { title: string; content: string; is_published: boolean }) => {
-    // Here you would typically send a POST request to your API to create a new post
-    console.log("Creating new post:", data)
-    // For demonstration purposes, we're just logging the data
-    // In a real application, you would send this data to your backend
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
+    try {
+      await axios.post("http://127.0.0.1:8000/api/posts/", data)
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Error creating post:", error)
+      // Here you might want to show an error message to the user
+    }
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!isAuthenticated) {
+    return null // This will be handled by the useEffect hook
   }
 
   return (

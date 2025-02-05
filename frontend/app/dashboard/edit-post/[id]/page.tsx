@@ -1,51 +1,52 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import axios from "axios"
 import PostForm from "@/components/dashboard/PostForm"
+import { useAuth } from "@/lib/AuthContext"
 
 export default function EditPost() {
   const [post, setPost] = useState<{ title: string; content: string; is_published: boolean } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const params = useParams()
+  const router = useRouter()
   const id = params?.id
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
 
   useEffect(() => {
-    const fetchPost = async () => {
-      // Here you would typically fetch the post data from your API
-      // For demonstration purposes, we're using mock data
-      setIsLoading(true)
-      try {
-        // Simulating API call
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        setPost({
-          title: "Example Post Title",
-          content: "<p>This is an example post content.</p>",
-          is_published: true,
-        })
-      } catch (error) {
-        console.error("Error fetching post:", error)
-        // Here you might want to show an error message to the user
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (id) {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/login")
+    } else if (isAuthenticated && id) {
       fetchPost()
     }
-  }, [id])
+  }, [authLoading, isAuthenticated, router, id])
 
-  const handleSubmit = async (data: { title: string; content: string; is_published: boolean }) => {
-    // Here you would typically send a PUT request to your API to update the post
-    console.log("Updating post:", data)
-    // For demonstration purposes, we're just logging the data
-    // In a real application, you would send this data to your backend
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
+  const fetchPost = async () => {
+    setIsLoading(true)
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/posts/${id}`)
+      setPost(response.data)
+    } catch (error) {
+      console.error("Error fetching post:", error)
+      // Here you might want to show an error message to the user
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  if (isLoading) {
+  const handleSubmit = async (data: { title: string; content: string; is_published: boolean }) => {
+    try {
+      await axios.put(`http://127.0.0.1:8000/api/posts/${id}`, data)
+      router.push("/dashboard")
+    } catch (error) {
+      console.error("Error updating post:", error)
+      // Here you might want to show an error message to the user
+    }
+  }
+
+  if (authLoading || isLoading) {
     return (
       <div className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="text-center py-6">
@@ -60,6 +61,10 @@ export default function EditPost() {
         </div>
       </div>
     )
+  }
+
+  if (!isAuthenticated) {
+    return null // This will be handled by the useEffect hook
   }
 
   if (!post) {
