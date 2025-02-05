@@ -49,6 +49,7 @@ api_router.include_router(contacts_router)
 api_router.include_router(posts_router)
 api_router.include_router(user_router)
 
+
 @api_router.get("/health")
 async def health():
     logger.debug("Received request to check health.")
