@@ -18,17 +18,11 @@ export default function Header() {
             <Link href="/#about" className="text-foreground hover:text-primary transition">
               Преимущества
             </Link>
-            <Link href="/#purpose" className="text-foreground hover:text-primary transition">
-              Назначение
-            </Link>
-            <Link href="/#construction" className="text-foreground hover:text-primary transition">
-              Конструкция
-            </Link>
             <Link href="/#documentation" className="text-foreground hover:text-primary transition">
               Документация
             </Link>
             <Link href="/#reviews" className="text-foreground hover:text-primary transition">
-              Отзывы
+              Отзыв
             </Link>
             <Link href="/#contact" className="text-foreground hover:text-primary transition">
               Контакты
@@ -46,17 +40,11 @@ export default function Header() {
             <Link href="#about" className="block text-foreground hover:text-primary transition">
               Преимущества
             </Link>
-            <Link href="#purpose" className="block text-foreground hover:text-primary transition">
-              Назначение
-            </Link>
-            <Link href="#construction" className="block text-foreground hover:text-primary transition">
-              Конструкция
-            </Link>
             <Link href="#documentation" className="block text-foreground hover:text-primary transition">
               Документация
             </Link>
             <Link href="#reviews" className="block text-foreground hover:text-primary transition">
-              Отзывы
+              Отзыв
             </Link>
             <Link href="#contact" className="block text-foreground hover:text-primary transition">
               Контакты
