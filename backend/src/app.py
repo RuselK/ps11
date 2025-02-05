@@ -6,7 +6,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi_pagination import add_pagination
 
 from src.config import config, logger
-from src.users.router import router as auth_router
+from src.users.router import user_router, auth_router
 from src.contacts.router import router as contacts_router
 from src.posts.router import router as posts_router
 from src.db import create_db_and_tables
@@ -47,7 +47,7 @@ api_router = APIRouter()
 api_router.include_router(auth_router)
 api_router.include_router(contacts_router)
 api_router.include_router(posts_router)
-
+api_router.include_router(user_router)
 
 @api_router.get("/health")
 async def health():
