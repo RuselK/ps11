@@ -35,7 +35,7 @@ export default function CookieBanner() {
         </p>
         <button
           onClick={handleAccept}
-          className="mt-2 md:mt-0 bg-secondary text-white px-4 py-2 
+          className="mt-2 md:mt-0 bg-primary text-white px-4 py-2 
                       rounded hover:bg-opacity-90 transition"
         >
           Понятно

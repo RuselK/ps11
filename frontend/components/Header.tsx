@@ -15,22 +15,22 @@ export default function Header() {
             ПОЛЯРСЕРВИС
           </Link>
           <div className="hidden md:flex space-x-6">
-            <Link href="#about" className="text-foreground hover:text-primary transition">
+            <Link href="/#about" className="text-foreground hover:text-primary transition">
               Преимущества
             </Link>
-            <Link href="#purpose" className="text-foreground hover:text-primary transition">
+            <Link href="/#purpose" className="text-foreground hover:text-primary transition">
               Назначение
             </Link>
-            <Link href="#construction" className="text-foreground hover:text-primary transition">
+            <Link href="/#construction" className="text-foreground hover:text-primary transition">
               Конструкция
             </Link>
-            <Link href="#documentation" className="text-foreground hover:text-primary transition">
+            <Link href="/#documentation" className="text-foreground hover:text-primary transition">
               Документация
             </Link>
-            <Link href="#reviews" className="text-foreground hover:text-primary transition">
+            <Link href="/#reviews" className="text-foreground hover:text-primary transition">
               Отзывы
             </Link>
-            <Link href="#contact" className="text-foreground hover:text-primary transition">
+            <Link href="/#contact" className="text-foreground hover:text-primary transition">
               Контакты
             </Link>
             <Link href="/blog" className="text-foreground hover:text-primary transition">

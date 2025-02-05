@@ -24,7 +24,7 @@ export default function Reviews() {
             <Image
               src="/imgs/Нобель-Ойл-о-БЗУ-Тест-сепаратора.jpg"
               alt="Письмо-отзыв о работе БЗУ-Тест Сепаратора в нефтяной отрасли"
-              width={400}
+              width={300}
               height={600}
               className="rounded-lg shadow-xl h-96 m-auto"
             />

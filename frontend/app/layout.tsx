@@ -1,7 +1,7 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import { Roboto, Playfair_Display } from "next/font/google"
-import type React from "react" // Import React
+import type React from "react"
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
