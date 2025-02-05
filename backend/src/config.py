@@ -7,6 +7,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     DEBUG: bool = False
+    SECRET: str
+    COOKIE_AGE: int = 3600
+    JWT_AGE: int = 3600
+
+    # Admin
+    ADMIN_EMAIL: str
+    ADMIN_PASSWORD: str
 
     # Directories
     BASE_DIR: Path = Path(__file__).parent.parent
@@ -25,6 +32,17 @@ class Config(BaseSettings):
     ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     ALLOWED_METHODS: list[str] = ["POST"]
     ALLOWED_HEADERS: list[str] = ["Content-Type"]
+
+    # Database
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: int
+
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"  # noqa
 
     # Email
     MAIL_USERNAME: str

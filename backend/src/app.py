@@ -1,18 +1,35 @@
-from fastapi import FastAPI, BackgroundTasks, status, Depends
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel, EmailStr
+from fastapi_pagination import add_pagination
 
 from src.config import config, logger
-from src.mail_service import resend_form_data_to_email
-from src.captcha_service import captcha_dependency
+from src.users.router import router as auth_router
+from src.contacts.router import router as contacts_router
+from src.posts.router import router as posts_router
+from src.db import create_db_and_tables
+from src.users.utils import create_superuser
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_db_and_tables()
+    await create_superuser()
+    yield
 
 
 app = FastAPI(
     debug=config.DEBUG,
     redoc_url="/redoc" if config.DEBUG else None,
     docs_url="/docs" if config.DEBUG else None,
+    lifespan=lifespan,
 )
+
+add_pagination(app)
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.ALLOWED_ORIGINS,
@@ -25,35 +42,17 @@ app.add_middleware(
     allowed_hosts=config.ALLOWED_HOSTS
 )
 
+# API
+api_router = APIRouter()
+api_router.include_router(auth_router)
+api_router.include_router(contacts_router)
+api_router.include_router(posts_router)
 
-class FormData(BaseModel):
-    name: str
-    phone: str
-    email: EmailStr
-    message: str = None
 
-
-@app.get("/api/health")
+@api_router.get("/health")
 async def health():
     logger.debug("Received request to check health.")
     return {"status": "ok"}
 
 
-@app.post(
-    "/api/send_form",
-    status_code=status.HTTP_204_NO_CONTENT,
-    dependencies=[Depends(captcha_dependency)],
-)
-async def send_form(
-    form_data: FormData,
-    background_tasks: BackgroundTasks,
-):
-    logger.debug("Received request to send form.")
-    background_tasks.add_task(
-        resend_form_data_to_email,
-        form_data.name,
-        form_data.phone,
-        form_data.email,
-        form_data.message,
-    )
-    logger.debug("Completed request to send form.")
+app.include_router(api_router, prefix="/api")
