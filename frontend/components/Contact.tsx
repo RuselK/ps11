@@ -36,7 +36,7 @@ export default function Contact() {
       return;
     }
 
-    const response = await axios.post("http://127.0.0.1:8000/api/send_form", {
+    const response = await axios.post("http://127.0.0.1:8000/api/contacts/send_form", {
       ...data,
       captchaToken,
     }, {
