@@ -54,3 +54,10 @@ class PostViewsStatistics(BaseModel):
     total_views: int
     total_unique_views: int
     date: date
+
+
+class MostViewedPostRead(BaseModel):
+    post_id: int
+    title: str
+    total_views: int
+    unique_views: int

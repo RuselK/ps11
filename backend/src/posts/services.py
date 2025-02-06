@@ -1,11 +1,12 @@
-from datetime import datetime
+from datetime import datetime, date
+from typing import Optional
 
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status
 from redis import Redis
 from sqlalchemy import select, Select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.redis import RedisManager, POST_VIEWS_KEY, get_broker_redis
+from src.redis import RedisManager, POST_VIEWS_KEY
 from src.db import async_session_maker
 from src.config import logger
 from .models import Post, PostView
@@ -15,6 +16,8 @@ from .schemas import (
     PostCreateDB,
     PostUpdateDB,
     PostStatistics,
+    PostViewsStatistics,
+    MostViewedPostRead,
 )
 
 
@@ -227,7 +230,9 @@ class PostViewService:
     async def get_post_views_statistics(
         cls,
         session: AsyncSession,
-    ):
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
+    ) -> list[PostViewsStatistics]:
         query = (
             select(
                 PostView.date,
@@ -236,7 +241,41 @@ class PostViewService:
             )
             .group_by(PostView.date)
         )
+        if start_date:
+            query = query.filter(PostView.date >= start_date)
+        if end_date:
+            query = query.filter(PostView.date <= end_date)
+
         result = await session.execute(query)
-        res = result.mappings().all()
-        print(res)
-        return res
+        return result.mappings().all()
+
+    @classmethod
+    async def get_most_viewed_posts(
+        cls,
+        session: AsyncSession,
+        limit: int = 5,
+    ) -> list[MostViewedPostRead]:
+        query = (
+            select(
+                Post.id.label("post_id"),
+                Post.title.label("title"),
+                func.sum(PostView.view_count).label("total_views"),
+                func.sum(PostView.unique_views).label("unique_views"),
+            )
+            .join(PostView, Post.id == PostView.post_id)
+            .group_by(Post.id)
+            .order_by(func.sum(PostView.view_count).desc())
+            .limit(limit)
+        )
+        result = await session.execute(query)
+        rows = result.all()
+
+        return [
+            MostViewedPostRead(
+                post_id=row.post_id,
+                title=row.title,
+                total_views=row.total_views,
+                unique_views=row.unique_views,
+            )
+            for row in rows
+        ]

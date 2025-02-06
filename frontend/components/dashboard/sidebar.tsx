@@ -5,8 +5,8 @@ import { Home, FileText, PlusCircle, LogOut, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { logout } from "@/services/authService"
-import { useRouter, usePathname } from "next/navigation" // import usePathname
-import { cn } from "@/lib/utils" // optional helper for conditional classes
+import { useRouter, usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 interface SidebarProps {
   open: boolean
@@ -17,7 +17,6 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
   const closeSidebar = () => setOpen(false)
   const router = useRouter()
   
-  // The current route (e.g., "/dashboard/posts" or "/dashboard")
   const pathname = usePathname()
   
   const handleLogout = () => {
@@ -25,10 +24,6 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
     router.push("/login")
   }
 
-  // Helper to determine if a link is active
-  // For exact match: pathname === href
-  // For nested routes: e.g. if you want "/dashboard/posts/new" to highlight "/dashboard/posts":
-  //     => pathname.startsWith(href)
   function isActive(href: string) {
     return pathname === href
   }
@@ -49,7 +44,7 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
       >
         <div className="h-full flex flex-col">
           <div className="flex items-center justify-between h-16 px-4 border-b">
-            <h1 className="text-2xl font-bold">ps11-AdminPanel</h1>
+            <h1 className="text-2xl font-bold">ПОЛЯРСЕРВИС</h1>
             <Button variant="ghost" size="icon" onClick={closeSidebar} className="md:hidden">
               <X className="h-6 w-6" />
             </Button>
@@ -62,7 +57,6 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
                 className={cn(
                   "group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-100 hover:text-gray-900 mb-2",
                   {
-                    // Apply active styles if the path is exactly '/dashboard'
                     "bg-gray-200  hover:bg-gray-300 font-semibold":
                       isActive("/dashboard"),
                   }
@@ -77,8 +71,6 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
                 className={cn(
                   "group flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-100 hover:text-gray-900 mb-2",
                   {
-                    // If you want sub-routes (e.g. "/dashboard/posts/new") to highlight the same link,
-                    // you could do pathname.startsWith("/dashboard/posts") here.
                     "bg-gray-200  hover:bg-gray-300 font-semibold":
                       isActive("/dashboard/posts"),
                   }

@@ -25,7 +25,7 @@ export default function DashboardLayout({
             </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl w-full mx-auto">{children}</main>
         <Toaster />
       </div>
     </div>

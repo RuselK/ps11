@@ -48,6 +48,12 @@ export interface PaginatedPosts {
   pages: number | null;
 }
 
+export interface MostViewedPostRead {
+  post_id: number
+  title: string
+  total_views: number
+  unique_views: number
+}
 
 /**
  * Shape for post statistics (GET /api/posts/statistics).
@@ -153,6 +159,25 @@ export async function getPostStatistics(): Promise<AxiosResponse<PostStatistics>
  * Get post views statistics.
  * GET /api/posts/views
  */
-export async function getPostViewsStatistics(): Promise<AxiosResponse<PostViewsStatistics>> {
-  return apiClient.get<PostViewsStatistics>('/api/admin/posts/views');
+export async function getPostViewsStatistics(
+  startDate?: string,
+  endDate?: string
+): Promise<AxiosResponse<PostViewsStatistics[]>> {
+  return apiClient.get<PostViewsStatistics[]>("/api/admin/posts/views", {
+    params: {
+      ...(startDate ? { start_date: startDate } : {}),
+      ...(endDate ? { end_date: endDate } : {}),
+    },
+  })
+}
+
+/**
+ * Fetch the top `limit` most viewed posts.
+ */
+export async function getMostViewedPosts(
+  limit = 5
+): Promise<AxiosResponse<MostViewedPostRead[]>> {
+  return apiClient.get<MostViewedPostRead[]>("/api/admin/posts/most-views", {
+    params: { limit },
+  })
 }

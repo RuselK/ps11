@@ -111,7 +111,11 @@ export default function PostsPage() {
 
       {/* Card view on mobile screens */}
       <div className="md:hidden">
-        <PostsCardView posts={paginatedPosts.items} onDelete={handleDelete} />
+        <PostsCardView
+          posts={paginatedPosts.items}
+          onDelete={handleDelete}
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Render pagination only if more than 1 page is available */}

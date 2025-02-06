@@ -4,13 +4,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DeletePostDialog } from "@/components/dashboard/deletePostDialog"
 import { PostRead } from "@/services/postService"
+import { PostsCardViewSkeleton } from "@/components/dashboard/postsCardViewSkeleton"
 
 interface PostsCardViewProps {
   posts: PostRead[]
   onDelete: (id: number) => void
+  isLoading: boolean
 }
 
-export function PostsCardView({ posts, onDelete }: PostsCardViewProps) {
+export function PostsCardView({ posts, onDelete, isLoading }: PostsCardViewProps) {
+  if (isLoading) {
+    return <PostsCardViewSkeleton />
+  }
   return (
     <div className="space-y-4">
       {posts.map((post) => (
@@ -37,6 +42,7 @@ export function PostsCardView({ posts, onDelete }: PostsCardViewProps) {
         </Card>
       ))}
     </div>
+
   )
 }
 

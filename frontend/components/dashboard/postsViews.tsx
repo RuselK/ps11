@@ -31,42 +31,47 @@ import {
 } from "@/services/postService"
 
 const chartConfig = {
-  visitors: {
-    label: "Просмотры",
-  },
-  desktop: {
-    label: "Уникальные просмотры",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
+  total_views: {
     label: "Общие просмотры",
     color: "hsl(var(--chart-2))",
+  },
+  total_unique_views: {
+    label: "Уникальные просмотры",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
 export function PostsViews() {
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = React.useState("30d")
   const [chartData, setChartData] = React.useState<PostViewsStatistics[]>([])
 
   React.useEffect(() => {
-    getPostViewsStatistics().then((res) => {
+    const endDate = new Date()
+    const startDate = new Date()
+
+    switch (timeRange) {
+      case "7d":
+        startDate.setDate(endDate.getDate() - 7)
+        break
+      case "30d":
+        startDate.setDate(endDate.getDate() - 30)
+        break
+      case "90d":
+        startDate.setDate(endDate.getDate() - 90)
+        break
+      default:
+        startDate.setDate(endDate.getDate() - 30)
+        break
+    }
+
+
+    const startDateISO = startDate.toISOString().split("T")[0]
+    const endDateISO = endDate.toISOString().split("T")[0]
+
+    getPostViewsStatistics(startDateISO, endDateISO).then((res) => {
       setChartData(res.data)
     })
-  }, [])
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+  }, [timeRange])
 
   return (
     <Card>
@@ -74,7 +79,7 @@ export function PostsViews() {
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Количество просмотров</CardTitle>
           <CardDescription>
-            Показывает количество просмотров за период
+            Показывает количество просмотров за выбранный период
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -82,49 +87,46 @@ export function PostsViews() {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a value"
           >
-            <SelectValue placeholder="3 месяца" />
+            <SelectValue placeholder="30 дней" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              3 месяца
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              30 дней
-            </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              7 дней
-            </SelectItem>
+            <SelectItem value="7d">7 дней</SelectItem>
+            <SelectItem value="30d">30 дней</SelectItem>
+            <SelectItem value="90d">90 дней</SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={filteredData}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+          <AreaChart data={chartData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillTotalViews" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="var(--color-total_views)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="var(--color-total_views)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient
+                id="fillTotalUniqueViews"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <stop
                   offset="5%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="var(--color-total_unique_views)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="var(--color-total_unique_views)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -138,7 +140,7 @@ export function PostsViews() {
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
+                return date.toLocaleDateString("ru-RU", {
                   month: "short",
                   day: "numeric",
                 })
@@ -149,7 +151,7 @@ export function PostsViews() {
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
+                    return new Date(value).toLocaleDateString("ru-RU", {
                       month: "short",
                       day: "numeric",
                     })
@@ -159,18 +161,16 @@ export function PostsViews() {
               }
             />
             <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
+              dataKey="total_views"
+              type="monotone"
+              fill="url(#fillTotalViews)"
+              stroke="var(--color-total_views)"
             />
             <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
+              dataKey="total_unique_views"
+              type="monotone"
+              fill="url(#fillTotalUniqueViews)"
+              stroke="var(--color-total_unique_views)"
             />
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>

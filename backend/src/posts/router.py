@@ -1,4 +1,5 @@
-from typing import TypeVar
+from typing import TypeVar, Optional
+from datetime import date
 
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +15,7 @@ from .schemas import (
     PostUpdate,
     PostStatistics,
     PostViewsStatistics,
+    MostViewedPostRead,
 )
 from .services import PostService, PostViewService
 from .dependencies import track_post_view, get_post_by_slug
@@ -82,12 +84,29 @@ async def get_post_statistics(
 @admin_router.get(
     "/views",
     response_model=list[PostViewsStatistics],
-    # dependencies=[Depends(current_superuser)],
+    dependencies=[Depends(current_superuser)],
 )
 async def get_post_views_statistics(
     session: AsyncSession = Depends(get_async_session),
+    start_date: Optional[date] = Query(None),
+    end_date: Optional[date] = Query(None),
 ) -> list[PostViewsStatistics]:
-    return await PostViewService.get_post_views_statistics(session)
+    return await PostViewService.get_post_views_statistics(
+        session=session,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+@admin_router.get(
+    "/most-views",
+    response_model=list[MostViewedPostRead],
+    dependencies=[Depends(current_superuser)],
+)
+async def get_most_viewed_posts(
+    limit: int = Query(5, ge=1, le=50),
+    session: AsyncSession = Depends(get_async_session),
+) -> list[MostViewedPostRead]:
+    return await PostViewService.get_most_viewed_posts(session, limit=limit)
 
 
 @admin_router.get(
