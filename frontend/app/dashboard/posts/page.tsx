@@ -6,12 +6,31 @@ import { PlusCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PostsTable } from "@/components/dashboard/postsTable"
 import { PostsCardView } from "@/components/dashboard/postsCardView"
-import { getPosts, PostRead, deletePost, PaginatedPosts } from "@/services/postService"
-import { Pagination } from "@/components/ui/pagination"
+import {
+  getPosts,
+  deletePost,
+  type PaginatedPosts,
+} from "@/services/postService"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const POSTS_PER_PAGE = 10
 
 export default function PostsPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Parse the "page" param from the URL, or default to 1.
+  const pageParam = searchParams.get("page")
+  const currentPage = pageParam ? Number.parseInt(pageParam) : 1
+
   const [paginatedPosts, setPaginatedPosts] = useState<PaginatedPosts>({
     items: [],
     total: 0,
@@ -22,39 +41,52 @@ export default function PostsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchPosts = async (page = 1) => {
-    setIsLoading(true)
+  /**
+   * Fetch posts for the given page number.
+   */
+  const fetchPosts = async (page: number) => {
     try {
+      setIsLoading(true)
+      setError(null)
       const response = await getPosts(page, POSTS_PER_PAGE)
       setPaginatedPosts(response.data)
-    } catch (error) {
+    } catch (err) {
       setError("Ошибка при загрузке постов.")
     } finally {
       setIsLoading(false)
     }
   }
-  useEffect(() => {
-    
-    fetchPosts()
-  }, [])
 
+  /**
+   * When currentPage changes in the URL, fetch the posts for that page.
+   * This avoids double-fetching or infinite loops.
+   */
+  useEffect(() => {
+    fetchPosts(currentPage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage])
+
+  /**
+   * Handle deleting a post, then re-fetch the current page.
+   */
   const handleDelete = async (id: number) => {
     try {
       await deletePost(id)
-      setPaginatedPosts({
-        ...paginatedPosts,
-        items: paginatedPosts.items.filter((post) => post.id !== id),
-      })
+      // Re-fetch the current page to update the UI
+      fetchPosts(currentPage)
     } catch (error) {
       setError("Ошибка при удалении поста.")
     }
   }
-  
+
+  /**
+   * Navigate to a different page by updating the `page` param,
+   * which triggers the effect above.
+   */
   const handlePageChange = (page: number) => {
-    fetchPosts(page)
+    router.push(`/dashboard/posts?page=${page}`)
   }
 
-  
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -65,22 +97,71 @@ export default function PostsPage() {
           </Link>
         </Button>
       </div>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      {/* Table view on larger screens */}
       <div className="hidden md:block">
-        <PostsTable posts={paginatedPosts.items} onDelete={handleDelete} isLoading={isLoading} />
+        <PostsTable
+          posts={paginatedPosts.items}
+          onDelete={handleDelete}
+          isLoading={isLoading}
+        />
       </div>
+
+      {/* Card view on mobile screens */}
       <div className="md:hidden">
         <PostsCardView posts={paginatedPosts.items} onDelete={handleDelete} />
       </div>
+
+      {/* Render pagination only if more than 1 page is available */}
       {paginatedPosts.pages && paginatedPosts.pages > 1 && (
         <div className="mt-4">
-          <Pagination
-            currentPage={paginatedPosts.page || 1}
-            totalPages={paginatedPosts.pages}
-            onPageChange={handlePageChange}
-          />
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={`/dashboard/posts?page=${Math.max(1, currentPage - 1)}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handlePageChange(Math.max(1, currentPage - 1))
+                  }}
+                />
+              </PaginationItem>
+
+              {Array.from({ length: paginatedPosts.pages }, (_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href={`/dashboard/posts?page=${i + 1}`}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handlePageChange(i + 1)
+                    }}
+                    isActive={currentPage === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  href={`/dashboard/posts?page=${Math.min(
+                    paginatedPosts.pages || 1,
+                    currentPage + 1
+                  )}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handlePageChange(
+                      Math.min(paginatedPosts.pages || 1, currentPage + 1)
+                    )
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
     </div>
   )
 }
-
