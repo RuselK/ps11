@@ -82,13 +82,21 @@ export async function getPostBySlug(slug: string): Promise<AxiosResponse<PostRea
 }
 
 /**
+ * Fetch a single post by its ID.
+ * GET /api/posts/{post_id}
+ */
+export async function getPostById(postId: number): Promise<AxiosResponse<PostRead>> {
+  return apiClient.get<PostRead>(`/api/admin/posts/${postId}`);
+}
+
+/**
  * Create a new post.
  * POST /api/posts/
  */
 export async function createPost(
   postData: PostCreate
 ): Promise<AxiosResponse<PostRead>> {
-  return apiClient.post<PostRead>('/api/posts/', postData);
+  return apiClient.post<PostRead>('/api/admin/posts/', postData);
 }
 
 /**
@@ -99,7 +107,7 @@ export async function updatePost(
   postId: number,
   postData: PostUpdate
 ): Promise<AxiosResponse<PostRead>> {
-  return apiClient.put<PostRead>(`/api/posts/${postId}`, postData);
+  return apiClient.put<PostRead>(`/api/admin/posts/${postId}`, postData);
 }
 
 /**
@@ -107,7 +115,7 @@ export async function updatePost(
  * DELETE /api/posts/{post_id}
  */
 export async function deletePost(postId: number): Promise<AxiosResponse<void>> {
-  return apiClient.delete<void>(`/api/posts/${postId}`);
+  return apiClient.delete<void>(`/api/admin/posts/${postId}`);
 }
 
 /**
@@ -115,5 +123,5 @@ export async function deletePost(postId: number): Promise<AxiosResponse<void>> {
  * GET /api/posts/statistics
  */
 export async function getPostStatistics(): Promise<AxiosResponse<PostStatistics>> {
-  return apiClient.get<PostStatistics>('/api/posts/statistics');
+  return apiClient.get<PostStatistics>('/api/admin/posts/statistics');
 }

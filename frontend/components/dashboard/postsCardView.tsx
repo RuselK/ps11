@@ -27,7 +27,7 @@ export function PostsCardView({ posts, onDelete }: PostsCardViewProps) {
             </p>
             <div className="flex space-x-2 mt-4">
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/dashboard/posts/${post.slug}`}>
+                <Link href={`/dashboard/posts/${post.id}`}>
                   <Edit className="h-4 w-4 mr-2" /> Редактировать
                 </Link>
               </Button>

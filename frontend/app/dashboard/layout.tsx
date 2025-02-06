@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function DashboardLayout({
   children,
@@ -25,6 +26,7 @@ export default function DashboardLayout({
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-8">{children}</main>
+        <Toaster />
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ from src.config import config, logger
 from src.users.router import user_router, auth_router
 from src.contacts.router import router as contacts_router
 from src.posts.router import router as posts_router
+from src.posts.router import admin_router as admin_posts_router
 from src.images.router import router as images_router
 from src.db import create_db_and_tables
 from src.users.utils import create_superuser
@@ -49,6 +50,7 @@ api_router = APIRouter()
 api_router.include_router(auth_router)
 api_router.include_router(contacts_router)
 api_router.include_router(posts_router)
+api_router.include_router(admin_posts_router)
 api_router.include_router(user_router)
 api_router.include_router(images_router)
 

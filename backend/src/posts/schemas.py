@@ -42,3 +42,9 @@ class PostRead(PostBase):
     slug: str
     created_at: datetime
     updated_at: datetime
+
+
+class PostStatistics(BaseModel):
+    total_posts: int
+    total_published_posts: int
+    total_draft_posts: int

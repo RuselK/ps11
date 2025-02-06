@@ -11,6 +11,8 @@ class Config(BaseSettings):
     MEDIA_DIR: Path = BASE_DIR / "media"
     MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
+    DOMAIN: str
+
     SECRET: str
     COOKIE_AGE: int = 3600
     JWT_AGE: int = 3600
@@ -69,6 +71,7 @@ class Config(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR.parent / ".env",
+        extra="ignore",
     )
 
 

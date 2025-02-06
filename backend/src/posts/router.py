@@ -6,13 +6,14 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Page, Params
 from fastapi_pagination.customization import CustomizedPage, UseParams
 
-from src.posts.schemas import PostCreate, PostRead, PostUpdate
+from src.posts.schemas import PostCreate, PostRead, PostUpdate, PostStatistics
 from src.posts.services import PostService
 from src.users.utils import current_superuser
 from src.db import get_async_session
 
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
+admin_router = APIRouter(prefix="/admin/posts", tags=["Admin Posts"])
 
 
 T = TypeVar("T")
@@ -37,6 +38,17 @@ async def get_posts(
     return await paginate(session, query)
 
 
+@admin_router.get(
+    "/statistics",
+    response_model=PostStatistics,
+    dependencies=[Depends(current_superuser)],
+)
+async def get_post_statistics(
+    session: AsyncSession = Depends(get_async_session),
+) -> PostStatistics:
+    return await PostService.get_post_statistics(session)
+
+
 @router.get("/{slug}", response_model=PostRead)
 async def get_post(
     slug: str,
@@ -45,7 +57,19 @@ async def get_post(
     return await PostService.get_post_by_slug(session, slug)
 
 
-@router.post(
+@admin_router.get(
+    "/{post_id}",
+    response_model=PostRead,
+    dependencies=[Depends(current_superuser)],
+)
+async def get_post_by_id(
+    post_id: int,
+    session: AsyncSession = Depends(get_async_session),
+):
+    return await PostService.get_post_by_id(session, post_id)
+
+
+@admin_router.post(
     "/",
     response_model=PostRead,
     dependencies=[Depends(current_superuser)],
@@ -57,7 +81,7 @@ async def create_post(
     return await PostService.create_post(session, post)
 
 
-@router.put(
+@admin_router.put(
     "/{post_id}",
     response_model=PostRead,
     dependencies=[Depends(current_superuser)],
@@ -70,7 +94,7 @@ async def update_post(
     return await PostService.update_post(session, post_id, post)
 
 
-@router.delete(
+@admin_router.delete(
     "/{post_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(current_superuser)],

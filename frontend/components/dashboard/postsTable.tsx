@@ -31,11 +31,11 @@ export function PostsTable({ posts, onDelete, isLoading }: PostsTableProps) {
           <TableRow key={post.id}>
             <TableCell>{post.title}</TableCell>
             <TableCell>{post.is_published ? "Опубликовано" : "Черновик"}</TableCell>
-            <TableCell>{post.created_at}</TableCell>
+            <TableCell>{new Date(post.created_at).toLocaleDateString()}</TableCell>
             <TableCell>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/dashboard/posts/${post.slug}`}>
+                  <Link href={`/dashboard/posts/${post.id}`}>
                     <Edit className="h-4 w-4" />
                   </Link>
                 </Button>
