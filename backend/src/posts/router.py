@@ -37,18 +37,18 @@ async def get_posts(
     return await paginate(session, query)
 
 
-@router.get("/{post_id}", response_model=PostRead)
+@router.get("/{slug}", response_model=PostRead)
 async def get_post(
-    post_id: int,
+    slug: str,
     session: AsyncSession = Depends(get_async_session),
 ):
-    return await PostService.get_post_by_id(session, post_id)
+    return await PostService.get_post_by_slug(session, slug)
 
 
 @router.post(
     "/",
     response_model=PostRead,
-    dependencies=[Depends(current_superuser)],
+    # dependencies=[Depends(current_superuser)],
 )
 async def create_post(
     post: PostCreate,

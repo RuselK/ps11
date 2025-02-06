@@ -13,9 +13,14 @@ class Post(Base):
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(POST_TITLE_MAX_LENGTH))
+    title: Mapped[str] = mapped_column(
+        String(POST_TITLE_MAX_LENGTH), unique=True
+    )
     content: Mapped[str] = mapped_column(Text)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
+    slug: Mapped[str] = mapped_column(
+        String, unique=True, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now
     )

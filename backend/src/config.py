@@ -7,6 +7,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     DEBUG: bool = False
+    BASE_DIR: Path = Path(__file__).parent.parent
+    MEDIA_DIR: Path = BASE_DIR / "media"
+    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+
     SECRET: str
     COOKIE_AGE: int = 3600
     JWT_AGE: int = 3600

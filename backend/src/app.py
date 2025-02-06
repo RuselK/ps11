@@ -3,12 +3,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 
 from src.config import config, logger
 from src.users.router import user_router, auth_router
 from src.contacts.router import router as contacts_router
 from src.posts.router import router as posts_router
+from src.images.router import router as images_router
 from src.db import create_db_and_tables
 from src.users.utils import create_superuser
 
@@ -48,6 +50,7 @@ api_router.include_router(auth_router)
 api_router.include_router(contacts_router)
 api_router.include_router(posts_router)
 api_router.include_router(user_router)
+api_router.include_router(images_router)
 
 
 @api_router.get("/health")
@@ -57,3 +60,7 @@ async def health():
 
 
 app.include_router(api_router, prefix="/api")
+
+# Media
+if config.DEBUG:
+    app.mount("/media", StaticFiles(directory=config.MEDIA_DIR), name="media")
