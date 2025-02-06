@@ -59,6 +59,15 @@ export interface PostStatistics {
   total_draft_posts: number;
 }
 
+/**
+ * Shape for post views statistics (GET /api/posts/views).
+ * Matches the OpenAPI schema PostViewsStatistics.
+ */
+export interface PostViewsStatistics {
+  total_views: number;
+  total_unique_views: number;
+  date: string; // date-time
+}
 
 /**
  * Fetch a paginated list of posts.
@@ -68,10 +77,24 @@ export async function getPosts(
   pageNumber = 1,
   pageSize = 10
 ): Promise<AxiosResponse<PaginatedPosts>> {
+  return apiClient.get<PaginatedPosts>('/api/admin/posts/', {
+    params: { pageNumber, pageSize },
+  });
+}
+
+/**
+ * Fetch a paginated list of published posts.
+ * GET /api/posts/?pageNumber=&pageSize=
+ */
+export async function getPublishedPosts(
+  pageNumber = 1,
+  pageSize = 10
+): Promise<AxiosResponse<PaginatedPosts>> {
   return apiClient.get<PaginatedPosts>('/api/posts/', {
     params: { pageNumber, pageSize },
   });
 }
+
 
 /**
  * Fetch a single post by its slug.
@@ -124,4 +147,12 @@ export async function deletePost(postId: number): Promise<AxiosResponse<void>> {
  */
 export async function getPostStatistics(): Promise<AxiosResponse<PostStatistics>> {
   return apiClient.get<PostStatistics>('/api/admin/posts/statistics');
+}
+
+/**
+ * Get post views statistics.
+ * GET /api/posts/views
+ */
+export async function getPostViewsStatistics(): Promise<AxiosResponse<PostViewsStatistics>> {
+  return apiClient.get<PostViewsStatistics>('/api/admin/posts/views');
 }

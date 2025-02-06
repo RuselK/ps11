@@ -1,13 +1,31 @@
-from fastapi import HTTPException, status
+from datetime import datetime
+
+from fastapi import HTTPException, status, Depends
+from redis import Redis
 from sqlalchemy import select, Select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.redis import RedisManager, POST_VIEWS_KEY, get_broker_redis
+from src.db import async_session_maker
 from src.config import logger
-from .models import Post
-from .schemas import PostCreate, PostUpdate, PostCreateDB, PostUpdateDB, PostStatistics
+from .models import Post, PostView
+from .schemas import (
+    PostCreate,
+    PostUpdate,
+    PostCreateDB,
+    PostUpdateDB,
+    PostStatistics,
+)
 
 
 class PostService:
+
+    @classmethod
+    async def get_published_posts_query(cls) -> Select:
+        logger.info("Getting published posts query.")
+        return select(Post).where(
+            Post.is_published
+        ).order_by(Post.created_at.desc())
 
     @classmethod
     async def get_all_posts_query(cls) -> Select:
@@ -28,12 +46,14 @@ class PostService:
         return post
 
     @classmethod
-    async def get_post_by_slug(cls, session: AsyncSession, slug: str) -> Post:
+    async def get_post_by_slug(
+        cls, session: AsyncSession, slug: str, raise_exception: bool = True
+    ) -> Post:
         logger.info(f"Getting post by slug: {slug}")
         query = select(Post).where(Post.slug == slug)
         result = await session.execute(query)
         post = result.scalar_one_or_none()
-        if not post:
+        if not post and raise_exception:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Post not found",
@@ -70,9 +90,19 @@ class PostService:
                 detail="This slug is reserved for statistics",
             )
 
+        same_slug_post = await cls.get_post_by_slug(
+            session, post_db.slug, raise_exception=False
+        )
+        if same_slug_post:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Post with this title already exists",
+            )
+
         post = Post(**post_db.model_dump())
         session.add(post)
         await session.commit()
+        await session.refresh(post)
         return post
 
     @classmethod
@@ -91,12 +121,12 @@ class PostService:
         post_db.slug = post_in.slug
         session.add(post_db)
         await session.commit()
+        await session.refresh(post_db)
         logger.info(f"Post updated: {post}")
         return post_db
 
     @classmethod
     async def delete_post(cls, session: AsyncSession, post_id: int) -> None:
-        logger.info(f"Deleting post: {post_id}")
         post = await cls.get_post_by_id(session, post_id)
         if post:
             logger.info(f"Post found: {post}")
@@ -107,8 +137,6 @@ class PostService:
     async def get_post_statistics(
         cls, session: AsyncSession
     ) -> PostStatistics:
-        logger.info("Getting post statistics")
-
         query = select(func.count(Post.id)).select_from(Post)
         result = await session.execute(query)
         total_posts = result.scalar_one()
@@ -126,3 +154,89 @@ class PostService:
             total_published_posts=total_published_posts,
             total_draft_posts=total_draft_posts,
         )
+
+
+class PostViewService:
+
+    @classmethod
+    async def get_post_views_today(
+        cls, session: AsyncSession, post_id: int
+    ) -> PostView:
+        query = select(PostView).where(
+            PostView.post_id == post_id,
+            PostView.date == datetime.now().date(),
+        )
+        result = await session.execute(query)
+        return result.scalars().first()
+
+    @classmethod
+    async def create_post_view(
+        cls, session: AsyncSession, post_id: int
+    ) -> PostView:
+        post_view = PostView(
+            post_id=post_id,
+            date=datetime.now().date(),
+        )
+        session.add(post_view)
+        await session.commit()
+        await session.refresh(post_view)
+        return post_view
+
+    @classmethod
+    async def compare_unique_views(
+        cls, redis: Redis, post_id: int, unique_views: int
+    ) -> None:
+        key = POST_VIEWS_KEY.format(
+            post_id=post_id, date=datetime.now().date()
+        )
+        views_for_today = await RedisManager.get_set(redis, key)
+        if len(views_for_today) > unique_views:
+            return True
+        return False
+
+    @classmethod
+    async def track_post_view(
+        cls,
+        post_id: int,
+        redis: Redis,
+    ) -> None:
+        async with async_session_maker() as session:
+            try:
+                post_view = await cls.get_post_views_today(session, post_id)
+
+                # if post view does not exist, create it
+                if not post_view:
+                    post_view = await cls.create_post_view(session, post_id)
+
+                post_view.view_count += 1
+                # if the number of views for today is greater than the
+                # unique views, increment the unique views
+                if await cls.compare_unique_views(
+                    redis, post_id, post_view.unique_views
+                ):
+                    post_view.unique_views += 1
+
+                await session.commit()
+                await session.refresh(post_view)
+            finally:
+                await session.close()
+
+        return post_view
+
+    @classmethod
+    async def get_post_views_statistics(
+        cls,
+        session: AsyncSession,
+    ):
+        query = (
+            select(
+                PostView.date,
+                func.sum(PostView.view_count).label("total_views"),
+                func.sum(PostView.unique_views).label("total_unique_views"),
+            )
+            .group_by(PostView.date)
+        )
+        result = await session.execute(query)
+        res = result.mappings().all()
+        print(res)
+        return res

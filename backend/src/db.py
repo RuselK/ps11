@@ -16,7 +16,7 @@ class Base(DeclarativeBase):
 
 
 engine = create_async_engine(config.DATABASE_URL)
-async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+async_session_maker = async_sessionmaker(engine, class_=AsyncSession)
 
 
 async def create_db_and_tables() -> None:
@@ -31,8 +31,12 @@ async def create_db_and_tables() -> None:
             logger.info(
                 f"Skipping creation. Tables already exist: {existing_tables}"
             )
+        await conn.close()
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            await session.close()

@@ -17,3 +17,11 @@ services:
       - POSTGRES_HOST=${POSTGRES_HOST}
     ports:
       - ${POSTGRES_PORT}:5432
+
+  redis:
+    image: redis:7.0.5-alpine
+    container_name: ps11-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - ${REDIS_PORT}:6379

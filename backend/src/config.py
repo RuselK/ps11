@@ -17,6 +17,13 @@ class Config(BaseSettings):
     COOKIE_AGE: int = 3600
     JWT_AGE: int = 3600
 
+    # Redis
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_USERNAME: str
+    REDIS_PASSWORD: str
+    REDIS_BROKER_DB: int
+
     # Admin
     ADMIN_EMAIL: str
     ADMIN_PASSWORD: str

@@ -23,7 +23,7 @@ export function PostsCardView({ posts, onDelete }: PostsCardViewProps) {
               <strong>Статус:</strong> {post.is_published ? "Опубликовано" : "Черновик"}
             </p>
             <p>
-              <strong>Дата:</strong> {post.created_at}
+              <strong>Дата:</strong> {new Date(post.created_at).toLocaleDateString()}
             </p>
             <div className="flex space-x-2 mt-4">
               <Button variant="outline" size="sm" asChild>

@@ -6,10 +6,17 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Page, Params
 from fastapi_pagination.customization import CustomizedPage, UseParams
 
-from src.posts.schemas import PostCreate, PostRead, PostUpdate, PostStatistics
-from src.posts.services import PostService
 from src.users.utils import current_superuser
 from src.db import get_async_session
+from .schemas import (
+    PostCreate,
+    PostRead,
+    PostUpdate,
+    PostStatistics,
+    PostViewsStatistics,
+)
+from .services import PostService, PostViewService
+from .dependencies import track_post_view, get_post_by_slug
 
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
@@ -34,6 +41,29 @@ CustomPage = CustomizedPage[
 async def get_posts(
     session: AsyncSession = Depends(get_async_session),
 ):
+    query = await PostService.get_published_posts_query()
+    return await paginate(session, query)
+
+
+@router.get(
+    "/{slug}",
+    response_model=PostRead,
+    dependencies=[Depends(track_post_view)],
+)
+async def get_post(
+    post: PostRead = Depends(get_post_by_slug),
+):
+    return post
+
+
+@admin_router.get(
+    "/",
+    response_model=CustomPage[PostRead],
+    dependencies=[Depends(current_superuser)],
+)
+async def get_all_posts(
+    session: AsyncSession = Depends(get_async_session),
+):
     query = await PostService.get_all_posts_query()
     return await paginate(session, query)
 
@@ -49,12 +79,15 @@ async def get_post_statistics(
     return await PostService.get_post_statistics(session)
 
 
-@router.get("/{slug}", response_model=PostRead)
-async def get_post(
-    slug: str,
+@admin_router.get(
+    "/views",
+    response_model=list[PostViewsStatistics],
+    # dependencies=[Depends(current_superuser)],
+)
+async def get_post_views_statistics(
     session: AsyncSession = Depends(get_async_session),
-):
-    return await PostService.get_post_by_slug(session, slug)
+) -> list[PostViewsStatistics]:
+    return await PostViewService.get_post_views_statistics(session)
 
 
 @admin_router.get(
@@ -77,7 +110,7 @@ async def get_post_by_id(
 async def create_post(
     post: PostCreate,
     session: AsyncSession = Depends(get_async_session),
-) -> PostRead:
+):
     return await PostService.create_post(session, post)
 
 

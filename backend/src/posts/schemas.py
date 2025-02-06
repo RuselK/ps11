@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Self
 
 from pydantic import BaseModel, Field, ConfigDict, model_validator
@@ -48,3 +48,9 @@ class PostStatistics(BaseModel):
     total_posts: int
     total_published_posts: int
     total_draft_posts: int
+
+
+class PostViewsStatistics(BaseModel):
+    total_views: int
+    total_unique_views: int
+    date: date
