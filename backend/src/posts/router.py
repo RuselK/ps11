@@ -48,7 +48,7 @@ async def get_post(
 @router.post(
     "/",
     response_model=PostRead,
-    # dependencies=[Depends(current_superuser)],
+    dependencies=[Depends(current_superuser)],
 )
 async def create_post(
     post: PostCreate,
