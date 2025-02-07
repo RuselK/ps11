@@ -22,7 +22,11 @@ from .dependencies import track_post_view, get_post_by_slug
 
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
-admin_router = APIRouter(prefix="/admin/posts", tags=["Admin Posts"])
+admin_router = APIRouter(
+    prefix="/admin/posts",
+    tags=["Admin Posts"],
+    dependencies=[Depends(current_superuser)],
+)
 
 
 T = TypeVar("T")
@@ -58,11 +62,7 @@ async def get_post(
     return post
 
 
-@admin_router.get(
-    "/",
-    response_model=CustomPage[PostRead],
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.get("/", response_model=CustomPage[PostRead])
 async def get_all_posts(
     session: AsyncSession = Depends(get_async_session),
 ):
@@ -70,22 +70,14 @@ async def get_all_posts(
     return await paginate(session, query)
 
 
-@admin_router.get(
-    "/statistics",
-    response_model=PostStatistics,
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.get("/statistics", response_model=PostStatistics)
 async def get_post_statistics(
     session: AsyncSession = Depends(get_async_session),
 ) -> PostStatistics:
     return await PostService.get_post_statistics(session)
 
 
-@admin_router.get(
-    "/views",
-    response_model=list[PostViewsStatistics],
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.get("/views", response_model=list[PostViewsStatistics])
 async def get_post_views_statistics(
     session: AsyncSession = Depends(get_async_session),
     start_date: Optional[date] = Query(None),
@@ -97,11 +89,8 @@ async def get_post_views_statistics(
         end_date=end_date,
     )
 
-@admin_router.get(
-    "/most-views",
-    response_model=list[MostViewedPostRead],
-    dependencies=[Depends(current_superuser)],
-)
+
+@admin_router.get("/most-views", response_model=list[MostViewedPostRead])
 async def get_most_viewed_posts(
     limit: int = Query(5, ge=1, le=50),
     session: AsyncSession = Depends(get_async_session),
@@ -109,11 +98,7 @@ async def get_most_viewed_posts(
     return await PostViewService.get_most_viewed_posts(session, limit=limit)
 
 
-@admin_router.get(
-    "/{post_id}",
-    response_model=PostRead,
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.get("/{post_id}", response_model=PostRead)
 async def get_post_by_id(
     post_id: int,
     session: AsyncSession = Depends(get_async_session),
@@ -121,11 +106,7 @@ async def get_post_by_id(
     return await PostService.get_post_by_id(session, post_id)
 
 
-@admin_router.post(
-    "/",
-    response_model=PostRead,
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.post("/", response_model=PostRead)
 async def create_post(
     post: PostCreate,
     session: AsyncSession = Depends(get_async_session),
@@ -133,11 +114,7 @@ async def create_post(
     return await PostService.create_post(session, post)
 
 
-@admin_router.put(
-    "/{post_id}",
-    response_model=PostRead,
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.put("/{post_id}", response_model=PostRead)
 async def update_post(
     post_id: int,
     post: PostUpdate,
@@ -146,11 +123,7 @@ async def update_post(
     return await PostService.update_post(session, post_id, post)
 
 
-@admin_router.delete(
-    "/{post_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    dependencies=[Depends(current_superuser)],
-)
+@admin_router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(
     post_id: int,
     session: AsyncSession = Depends(get_async_session),

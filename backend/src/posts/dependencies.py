@@ -4,6 +4,7 @@ from fastapi import Depends, BackgroundTasks, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
+from src.utils import hash_ip
 from src.redis import (
     RedisManager,
     get_broker_redis,
@@ -41,7 +42,8 @@ async def track_post_view(
     background_tasks: BackgroundTasks = BackgroundTasks(),
 ) -> PostRead:
     key = POST_VIEWS_KEY.format(post_id=post.id, date=datetime.now().date())
-    await RedisManager.add_to_set(redis, key, request.client.host)
+    hashed_ip = hash_ip(request.client.host)
+    await RedisManager.add_to_set(redis, key, hashed_ip)
 
     background_tasks.add_task(
         PostViewService.track_post_view,

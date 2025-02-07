@@ -40,7 +40,6 @@ async def send_email(message: Message) -> None:
     """
     Send email.
     """
-    logger.debug("Sending email...")
     message = MessageSchema(
         subject=message.subject,
         body=message.body,
@@ -63,7 +62,6 @@ async def resend_form_data_to_email(
     """
     Resend form data to email.
     """
-    logger.debug("Resending form data to email...")
     message = Message(
         subject=SUBJECT,
         body=MESSAGE_BODY.format(
@@ -75,4 +73,3 @@ async def resend_form_data_to_email(
         recipients=config.RESEND_MAIL_TO,
     )
     await send_email(message)
-    logger.debug("Form data sent.")

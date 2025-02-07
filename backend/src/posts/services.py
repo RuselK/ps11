@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.redis import RedisManager, POST_VIEWS_KEY
 from src.db import async_session_maker
-from src.config import logger
 from .models import Post, PostView
 from .schemas import (
     PostCreate,
@@ -25,19 +24,16 @@ class PostService:
 
     @classmethod
     async def get_published_posts_query(cls) -> Select:
-        logger.info("Getting published posts query.")
         return select(Post).where(
             Post.is_published
         ).order_by(Post.created_at.desc())
 
     @classmethod
     async def get_all_posts_query(cls) -> Select:
-        logger.info("Getting all posts query.")
         return select(Post).order_by(Post.created_at.desc())
 
     @classmethod
     async def get_post_by_id(cls, session: AsyncSession, post_id: int) -> Post:
-        logger.info(f"Getting post by id: {post_id}")
         query = select(Post).where(Post.id == post_id)
         result = await session.execute(query)
         post = result.scalar_one_or_none()
@@ -52,7 +48,6 @@ class PostService:
     async def get_post_by_slug(
         cls, session: AsyncSession, slug: str, raise_exception: bool = True
     ) -> Post:
-        logger.info(f"Getting post by slug: {slug}")
         query = select(Post).where(Post.slug == slug)
         result = await session.execute(query)
         post = result.scalar_one_or_none()
@@ -67,7 +62,6 @@ class PostService:
     async def get_post_by_title(
         cls, session: AsyncSession, title: str
     ) -> Post:
-        logger.info(f"Getting post by title: {title}")
         query = select(Post).where(Post.title == title)
         result = await session.execute(query)
         return result.scalar_one_or_none()
@@ -78,8 +72,6 @@ class PostService:
         session: AsyncSession,
         post: PostCreate,
     ) -> Post:
-        logger.info(f"Creating post: {post}")
-
         if await cls.get_post_by_title(session, post.title):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -115,7 +107,6 @@ class PostService:
         post_id: int,
         post: PostUpdate,
     ) -> Post:
-        logger.info(f"Updating post: {post_id} with: {post}")
         post_db = await cls.get_post_by_id(session, post_id)
         post_in = PostUpdateDB(**post.model_dump())
         post_db.title = post_in.title
@@ -125,14 +116,12 @@ class PostService:
         session.add(post_db)
         await session.commit()
         await session.refresh(post_db)
-        logger.info(f"Post updated: {post}")
         return post_db
 
     @classmethod
     async def delete_post(cls, session: AsyncSession, post_id: int) -> None:
         post = await cls.get_post_by_id(session, post_id)
         if post:
-            logger.info(f"Post found: {post}")
             await session.delete(post)
             await session.commit()
 
@@ -212,8 +201,8 @@ class PostViewService:
                     post_view = await cls.create_post_view(session, post_id)
 
                 post_view.view_count += 1
-                # if the number of views for today is greater than the
-                # unique views, increment the unique views
+                # if the number unique views for today is greater than the
+                # unique views in db, increment the unique views
                 if await cls.compare_unique_views(
                     redis, post_id, post_view.unique_views
                 ):

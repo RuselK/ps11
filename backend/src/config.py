@@ -7,12 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     DEBUG: bool = False
-    BASE_DIR: Path = Path(__file__).parent.parent
-    MEDIA_DIR: Path = BASE_DIR / "media"
-    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
-
     DOMAIN: str
 
+    # Security
     SECRET: str
     COOKIE_AGE: int = 3600
     JWT_AGE: int = 3600
@@ -32,6 +29,8 @@ class Config(BaseSettings):
     BASE_DIR: Path = Path(__file__).parent.parent
     LOG_DIR: Path = BASE_DIR / "logs"
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    MEDIA_DIR: Path = BASE_DIR / "media"
+    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
     # Capcha
     SMARTCAPTCHA_SERVER_KEY: str

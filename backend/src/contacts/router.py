@@ -1,7 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from pydantic import BaseModel, EmailStr
 
-from src.config import logger
 from src.services.mail import resend_form_data_to_email
 from src.services.captcha import captcha_dependency
 
@@ -25,7 +24,6 @@ async def send_form(
     form_data: FormData,
     background_tasks: BackgroundTasks,
 ):
-    logger.debug("Received request to send form.")
     background_tasks.add_task(
         resend_form_data_to_email,
         form_data.name,
@@ -33,4 +31,3 @@ async def send_form(
         form_data.email,
         form_data.message,
     )
-    logger.debug("Completed request to send form.")

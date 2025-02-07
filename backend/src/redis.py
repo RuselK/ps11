@@ -33,6 +33,7 @@ class RedisManager:
     @classmethod
     async def add_to_set(cls, redis: Redis, key: str, value: str) -> None:
         await redis.sadd(key, value)
+        await redis.expire(key, EXPIRATION_TIME)
 
     @classmethod
     async def get_set(cls, redis: Redis, key: str) -> list[str]:

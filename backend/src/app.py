@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from fastapi_pagination import add_pagination
 
 from src.config import config, logger
@@ -57,7 +58,6 @@ api_router.include_router(images_router)
 
 @api_router.get("/health")
 async def health():
-    logger.debug("Received request to check health.")
     return {"status": "ok"}
 
 
@@ -66,3 +66,22 @@ app.include_router(api_router, prefix="/api")
 # Media
 if config.DEBUG:
     app.mount("/media", StaticFiles(directory=config.MEDIA_DIR), name="media")
+
+
+# Exception handlers
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    logger.error(f"Internal server error: {exc}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Internal Server Error"}
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.error(f"HTTP error. code: {exc.status_code}. detail: {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )

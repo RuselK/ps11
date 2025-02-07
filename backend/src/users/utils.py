@@ -70,8 +70,9 @@ async def create_superuser() -> None:
                 password=config.ADMIN_PASSWORD,
                 is_superuser=True,
                 is_active=True,
+                is_verified=True,
             )
             await user_manager.create(user_in)
-            logger.info("Superuser created")
+            logger.info("Superuser created.")
         else:
-            logger.info("Superuser already exists")
+            logger.info("Superuser already exists.")

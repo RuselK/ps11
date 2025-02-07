@@ -25,12 +25,14 @@ async def create_db_and_tables() -> None:
             lambda sync_conn: inspect(sync_conn).get_table_names()
         )
         if not existing_tables:
-            logger.info("No tables found. Creating database tables.")
+            logger.info("No tables found. Creating database tables...")
             await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database tables created.")
         else:
-            logger.info(
-                f"Skipping creation. Tables already exist: {existing_tables}"
-            )
+            msg = "Skipping creation. Tables already exist."
+            if config.DEBUG:
+                msg += f" Tables: {', '.join(existing_tables)}."
+            logger.info(msg)
         await conn.close()
 
 
