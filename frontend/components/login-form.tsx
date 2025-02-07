@@ -95,13 +95,12 @@ export function LoginForm({
                   onChange={(e) => setPassword(e.target.value)} 
                 />
               </div>
-              <div className="flex justify-center h-100">
+              <div className="h-100 w-full">
                 <SmartCaptcha
                   sitekey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITEKEY || ""}
                   key={resetCaptcha}
                   onSuccess={setCaptchaToken}
                   onTokenExpired={onTokenExpired}
-                  test={true}
                 />
               </div>
               <Button type="submit" className="w-full">
