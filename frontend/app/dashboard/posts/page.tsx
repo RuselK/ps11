@@ -11,15 +11,9 @@ import {
   deletePost,
   type PaginatedPosts,
 } from "@/services/postService"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
+
 import { useRouter, useSearchParams } from "next/navigation"
+import { Pagination } from "@/components/blog/pagination"
 
 const POSTS_PER_PAGE = 10
 
@@ -116,55 +110,7 @@ export default function PostsPage() {
           isLoading={isLoading}
         />
       </div>
-
-      {/* Render pagination only if more than 1 page is available */}
-      {paginatedPosts.pages && paginatedPosts.pages > 1 && (
-        <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={`/dashboard/posts?page=${Math.max(1, currentPage - 1)}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handlePageChange(Math.max(1, currentPage - 1))
-                  }}
-                />
-              </PaginationItem>
-
-              {Array.from({ length: paginatedPosts.pages }, (_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    href={`/dashboard/posts?page=${i + 1}`}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handlePageChange(i + 1)
-                    }}
-                    isActive={currentPage === i + 1}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  href={`/dashboard/posts?page=${Math.min(
-                    paginatedPosts.pages || 1,
-                    currentPage + 1
-                  )}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handlePageChange(
-                      Math.min(paginatedPosts.pages || 1, currentPage + 1)
-                    )
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
+      <Pagination currentPage={currentPage} totalPages={paginatedPosts.pages || 1} basePath="/dashboard/posts" />
     </div>
   )
 }

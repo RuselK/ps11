@@ -111,6 +111,14 @@ export async function getPostBySlug(slug: string): Promise<AxiosResponse<PostRea
 }
 
 /**
+ * Collect a post view.
+ * GET /api/posts/{slug}/collect-view
+ */
+export async function collectPostView(slug: string): Promise<AxiosResponse<void>> {
+  return apiClient.get<void>(`/api/posts/${encodeURIComponent(slug)}/collect-view`);
+}
+
+/**
  * Fetch a single post by its ID.
  * GET /api/posts/{post_id}
  */

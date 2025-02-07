@@ -3,8 +3,8 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { getPostBySlug } from "@/services/postService"
 import { CalendarIcon, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import PostViewTracker from "@/components/blog/collectView"
 
 interface BlogPostPageProps {
   params: { slug: string }
@@ -48,13 +48,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </BreadcrumbList>
           </Breadcrumb>
         <article className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-primary mb-4">{post.title}</h1>
+          <h1 className="text-4xl font-bold text-primary mb-4 break-words">{post.title}</h1>
           <div className="flex items-center text-sm text-muted-foreground mb-8">
             <CalendarIcon className="mr-2 h-4 w-4" />
             {new Date(post.created_at).toLocaleDateString()}
           </div>
           <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
         </article>
+        <PostViewTracker slug={params.slug} />
       </main>
     )
   } catch (error) {

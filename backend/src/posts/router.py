@@ -54,12 +54,20 @@ async def get_posts(
 @router.get(
     "/{slug}",
     response_model=PostRead,
-    dependencies=[Depends(track_post_view)],
 )
 async def get_post(
     post: PostRead = Depends(get_post_by_slug),
 ):
     return post
+
+
+@router.get(
+    "/{slug}/collect-view",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(track_post_view)],
+)
+async def collect_post_view():
+    return
 
 
 @admin_router.get("/", response_model=CustomPage[PostRead])

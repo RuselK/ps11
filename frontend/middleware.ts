@@ -8,37 +8,53 @@ interface JwtPayload {
 }
 
 export function middleware(req: NextRequest) {
-  // 1. Only run checks on /dashboard routes
-  if (!req.nextUrl.pathname.startsWith('/dashboard')) {
+  const { pathname } = req.nextUrl;
+  const token = req.cookies.get('authtoken')?.value;
+
+  // 1. If the user is trying to access the login page...
+  if (pathname === '/login') {
+    // ...and a token exists...
+    if (token) {
+      try {
+        // ...decode it...
+        const decoded = jwtDecode<JwtPayload>(token);
+        // ...and if it's still valid, redirect to dashboard.
+        if (decoded.exp && Date.now() < decoded.exp * 1000) {
+          return NextResponse.redirect(new URL('/dashboard', req.url));
+        }
+      } catch (error) {
+        console.error('JWT decode error:', error);
+      }
+    }
+    // Otherwise, allow access to the login page.
     return NextResponse.next();
   }
 
-  // 2. Retrieve the JWT from the cookie
-  const token = req.cookies.get('authtoken')?.value;
-  if (!token) {
-    // No token -> redirect to /login
-    return NextResponse.redirect(new URL('/login', req.url));
-  }
-
-  try {
-    // 3. Decode the JWT to get its payload
-    const decoded = jwtDecode<JwtPayload>(token);
-    // Example: check the expiration time
-    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-      // Token expired
+  // 2. If the user is trying to access any dashboard route...
+  if (pathname.startsWith('/dashboard')) {
+    // ...but there's no token, redirect to login.
+    if (!token) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    // 4. Token is valid for now -> proceed
-    return NextResponse.next();
-  } catch (error) {
-    // If decoding fails (malformed token, etc.)
-    console.error('JWT decode error:', error);
-    return NextResponse.redirect(new URL('/login', req.url));
+    try {
+      // ...if a token exists, decode it...
+      const decoded = jwtDecode<JwtPayload>(token);
+      // ...and if it’s expired, redirect to login.
+      if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+        return NextResponse.redirect(new URL('/login', req.url));
+      }
+    } catch (error) {
+      console.error('JWT decode error:', error);
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
   }
+
+  // 3. For all other routes, proceed as normal.
+  return NextResponse.next();
 }
 
-// 5. Apply this middleware only to the /dashboard routes
+// Apply this middleware only to the /dashboard and /login routes.
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard/:path*', '/login'],
 };
