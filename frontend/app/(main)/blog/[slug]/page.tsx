@@ -6,7 +6,6 @@ import { CalendarIcon, ChevronRight } from "lucide-react";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import PostViewTracker from "@/components/blog/collectView";
 
-// Update the type to reflect that params is asynchronous
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -14,7 +13,6 @@ interface BlogPostPageProps {
 export async function generateMetadata({
   params: _params,
 }: BlogPostPageProps): Promise<Metadata> {
-  // Await the params before accessing its properties
   const { slug } = await _params;
 
   try {
@@ -33,7 +31,6 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params: _params,
 }: BlogPostPageProps) {
-  // Await the params before using them
   const { slug } = await _params;
 
   try {
@@ -69,7 +66,6 @@ export default async function BlogPostPage({
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>
-        {/* Pass the awaited slug to your client component */}
         <PostViewTracker slug={slug} />
       </main>
     );
