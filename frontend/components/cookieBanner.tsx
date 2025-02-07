@@ -30,7 +30,7 @@ export function CookieBanner() {
             Подробнее
           </Link>
         </p>
-        <Button onClick={handleAccept} size="sm" className="bg-secondary hover:bg-secondary/90 font-bold">
+        <Button onClick={handleAccept} className="bg-secondary hover:bg-secondary/90 font-bold">
           Понятно
         </Button>
       </div>
