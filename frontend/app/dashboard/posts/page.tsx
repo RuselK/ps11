@@ -27,7 +27,6 @@ export default function PostsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Parse the "page" param from the URL, or default to 1.
   const pageParam = searchParams.get("page")
   const currentPage = pageParam ? Number.parseInt(pageParam) : 1
 

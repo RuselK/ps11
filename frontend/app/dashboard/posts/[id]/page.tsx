@@ -8,14 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { TiptapEditor } from "@/components/dashboard/tipTapEditor"
 import { getPostById, updatePost } from "@/services/postService"
-import { toast } from "@/hooks/use-toast" // or your own toast logic
+import { toast } from "@/hooks/use-toast"
 import { AxiosError } from "axios"
 
 export default function EditPostPage() {
   const router = useRouter()
   const { id } = useParams() as { id: string }
 
-  // Local state
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("<p>Загрузка...</p>")
   const [isPublished, setIsPublished] = useState(false)
@@ -44,7 +43,6 @@ export default function EditPostPage() {
           description: "Не удалось загрузить пост.",
           variant: "destructive",
         })
-        // Optionally redirect or handle error
       })
       .finally(() => {
         setLoading(false)
