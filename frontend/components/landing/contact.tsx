@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import Link from "next/link"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -177,14 +178,14 @@ export function Contact() {
                     <div className="space-y-1 leading-none">
                       <FormLabel>
                         Согласен с{" "}
-                        <a
-                          href="/media/Политика_конфиденциальности_ООО_Полярсервис.pdf"
+                        <Link
+                          href="/pdf/Политика_конфиденциальности_ООО_Полярсервис.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-500"
                         >
                           Политикой конфиденциальности
-                        </a>{" "}
+                        </Link>{" "}
                         и даю согласие на обработку персональных данных.
                       </FormLabel>
                       <FormMessage />

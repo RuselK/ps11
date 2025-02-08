@@ -3,7 +3,6 @@ networks:
     driver: bridge
 
 volumes:
-  static:
   db_data:
   media:
 
@@ -62,9 +61,6 @@ services:
     container_name: ps11-frontend
     networks:
       - ps11-network
-    # volumes:
-      # - media:/app/public/media
-      # - static:/app/public/
 
   nginx:
     build: ./nginx/
@@ -73,7 +69,6 @@ services:
       - "8080:80"
     volumes:
       - ./nginx/logs:/var/log/nginx
-      - static:/static
       - media:/media
     env_file: .env
     depends_on:

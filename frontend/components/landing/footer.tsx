@@ -8,7 +8,7 @@ export function Footer() {
           <ul className="flex justify-center space-x-4">
             <li>
               <Link
-                href="/media/Политика_конфиденциальности_ООО_Полярсервис.pdf"
+                href="/pdf/Политика_конфиденциальности_ООО_Полярсервис.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-secondary transition"
@@ -26,7 +26,7 @@ export function Footer() {
             </li>
             <li>
               <Link
-                href="/media/Карточка_ООО_Полярсервис.pdf"
+                href="/pdf/Карточка_ООО_Полярсервис.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-secondary transition"
