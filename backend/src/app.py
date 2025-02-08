@@ -19,7 +19,9 @@ from src.users.utils import create_superuser
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # TODO: make cli command to create db and tables
     await create_db_and_tables()
+    # TODO: make cli command to create superuser
     await create_superuser()
     yield
 

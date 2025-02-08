@@ -17,7 +17,10 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/cookie_info" className="text-gray-300 hover:text-secondary transition">
+              <Link
+                href="/cookie_info"
+                className="text-gray-300 hover:text-secondary transition"
+              >
                 Информация о сборе «cookie»
               </Link>
             </li>
@@ -33,10 +36,13 @@ export function Footer() {
             </li>
           </ul>
         </nav>
-        <p className="text-gray-400">&copy; {new Date().getFullYear()} Все права защищены.</p>
-        <p className="text-gray-400">ООО "Полярсервис" ОГРН: 1237700225531</p>
+        <p className="text-gray-400">
+          &copy; {new Date().getFullYear()} Все права защищены.
+        </p>
+        <p className="text-gray-400">
+          ООО &quot;Полярсервис&quot; ОГРН: 1237700225531
+        </p>
       </div>
     </footer>
   )
 }
-

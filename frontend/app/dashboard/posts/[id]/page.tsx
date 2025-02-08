@@ -25,10 +25,10 @@ export default function EditPostPage() {
   // 1. Load the existing post via ID
   useEffect(() => {
     if (!id) return
-
+  
     const numericId = parseInt(id, 10)
     setPostId(numericId)
-
+  
     getPostById(numericId)
       .then((res) => {
         const post = res.data
@@ -47,7 +47,8 @@ export default function EditPostPage() {
       .finally(() => {
         setLoading(false)
       })
-  }, [id, toast])
+  }, [id])
+  
 
   // 2. Handle form submission => update post
   const handleSubmit = async (e: React.FormEvent) => {

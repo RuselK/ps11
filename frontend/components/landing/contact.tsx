@@ -108,7 +108,7 @@ export function Contact() {
               <FormField
                 control={form.control}
                 name="name"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>
                       Имя<span className="text-red-500">*</span>
@@ -123,7 +123,7 @@ export function Contact() {
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>
                       Электронная почта<span className="text-red-500">*</span>
@@ -138,7 +138,7 @@ export function Contact() {
               <FormField
                 control={form.control}
                 name="phone"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>
                       Телефон<span className="text-red-500">*</span>
@@ -153,7 +153,7 @@ export function Contact() {
               <FormField
                 control={form.control}
                 name="message"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Сообщение</FormLabel>
                     <FormControl>
@@ -166,7 +166,7 @@ export function Contact() {
               <FormField
                 control={form.control}
                 name="consent"
-                render={({ field }: { field: any }) => (
+                render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox

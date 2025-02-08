@@ -1,5 +1,5 @@
 import Link from "next/link"
-import type { PostRead } from "@/lib/api/posts"
+import type { PostRead } from "@/services/postService"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { CalendarIcon } from "lucide-react"
 

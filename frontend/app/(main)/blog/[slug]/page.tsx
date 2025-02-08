@@ -21,7 +21,7 @@ export async function generateMetadata({
       title: `${post.title} - ООО Полярсервис`,
       description: post.content.replace(/<[^>]*>/g, "").substring(0, 160),
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Статья не найдена - ООО Полярсервис",
     };
@@ -69,7 +69,7 @@ export default async function BlogPostPage({
         <PostViewTracker slug={slug} />
       </main>
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 }

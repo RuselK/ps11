@@ -1,28 +1,26 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { PlusCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { PostsTable } from "@/components/dashboard/postsTable"
-import { PostsCardView } from "@/components/dashboard/postsCardView"
+import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PostsTable } from "@/components/dashboard/postsTable";
+import { PostsCardView } from "@/components/dashboard/postsCardView";
 import {
   getPosts,
   deletePost,
   type PaginatedPosts,
-} from "@/services/postService"
+} from "@/services/postService";
+import { Pagination } from "@/components/blog/pagination";
+import { useSearchParams } from "next/navigation";
 
-import { useRouter, useSearchParams } from "next/navigation"
-import { Pagination } from "@/components/blog/pagination"
+const POSTS_PER_PAGE = 10;
 
-const POSTS_PER_PAGE = 10
+function PostsPageContent() {
+  const searchParams = useSearchParams();
 
-export default function PostsPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-
-  const pageParam = searchParams.get("page")
-  const currentPage = pageParam ? Number.parseInt(pageParam) : 1
+  const pageParam = searchParams.get("page");
+  const currentPage = pageParam ? Number.parseInt(pageParam) : 1;
 
   const [paginatedPosts, setPaginatedPosts] = useState<PaginatedPosts>({
     items: [],
@@ -30,55 +28,36 @@ export default function PostsPage() {
     page: 1,
     size: POSTS_PER_PAGE,
     pages: 0,
-  })
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Fetch posts for the given page number.
-   */
   const fetchPosts = async (page: number) => {
     try {
-      setIsLoading(true)
-      setError(null)
-      const response = await getPosts(page, POSTS_PER_PAGE)
-      setPaginatedPosts(response.data)
-    } catch (err) {
-      setError("Ошибка при загрузке постов.")
+      setIsLoading(true);
+      setError(null);
+      const response = await getPosts(page, POSTS_PER_PAGE);
+      setPaginatedPosts(response.data);
+    } catch {
+      setError("Ошибка при загрузке постов.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  /**
-   * When currentPage changes in the URL, fetch the posts for that page.
-   * This avoids double-fetching or infinite loops.
-   */
   useEffect(() => {
-    fetchPosts(currentPage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage])
+    fetchPosts(currentPage);
+  }, [currentPage]);
 
-  /**
-   * Handle deleting a post, then re-fetch the current page.
-   */
   const handleDelete = async (id: number) => {
     try {
-      await deletePost(id)
+      await deletePost(id);
       // Re-fetch the current page to update the UI
-      fetchPosts(currentPage)
-    } catch (error) {
-      setError("Ошибка при удалении поста.")
+      fetchPosts(currentPage);
+    } catch {
+      setError("Ошибка при удалении поста.");
     }
-  }
-
-  /**
-   * Navigate to a different page by updating the `page` param,
-   * which triggers the effect above.
-   */
-  const handlePageChange = (page: number) => {
-    router.push(`/dashboard/posts?page=${page}`)
-  }
+  };
 
   return (
     <div>
@@ -110,7 +89,20 @@ export default function PostsPage() {
           isLoading={isLoading}
         />
       </div>
-      <Pagination currentPage={currentPage} totalPages={paginatedPosts.pages || 1} basePath="/dashboard/posts" />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={paginatedPosts.pages || 1}
+        basePath="/dashboard/posts"
+      />
     </div>
-  )
+  );
+}
+
+export default function PostsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PostsPageContent />
+    </Suspense>
+  );
 }
