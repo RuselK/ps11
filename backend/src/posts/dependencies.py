@@ -40,7 +40,7 @@ async def track_post_view(
     post: Post = Depends(get_post_by_slug),
     redis: Redis = Depends(get_broker_redis),
     background_tasks: BackgroundTasks = BackgroundTasks(),
-) -> PostRead:
+) -> None:
     key = POST_VIEWS_KEY.format(post_id=post.id, date=datetime.now().date())
     hashed_ip = hash_ip(request.client.host)
     await RedisManager.add_to_set(redis, key, hashed_ip)
@@ -50,4 +50,3 @@ async def track_post_view(
         post.id,
         redis,
     )
-    return post

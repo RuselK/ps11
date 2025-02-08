@@ -21,7 +21,7 @@ from .schemas import UserCreate
 cookie_transport = CookieTransport(
     cookie_name="authtoken",
     cookie_max_age=config.COOKIE_AGE,
-    cookie_secure=False,  # TODO: change to True in production
+    cookie_secure=not config.DEBUG,
 )
 
 

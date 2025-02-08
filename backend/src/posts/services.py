@@ -6,6 +6,7 @@ from redis import Redis
 from sqlalchemy import select, Select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.config import logger
 from src.redis import RedisManager, POST_VIEWS_KEY
 from src.db import async_session_maker
 from .models import Post, PostView
@@ -33,11 +34,13 @@ class PostService:
         return select(Post).order_by(Post.created_at.desc())
 
     @classmethod
-    async def get_post_by_id(cls, session: AsyncSession, post_id: int) -> Post:
+    async def get_post_by_id(
+        cls, session: AsyncSession, post_id: int, raise_exception: bool = True
+    ) -> Post:
         query = select(Post).where(Post.id == post_id)
         result = await session.execute(query)
         post = result.scalar_one_or_none()
-        if not post:
+        if not post and raise_exception:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Post not found",
@@ -194,6 +197,15 @@ class PostViewService:
     ) -> None:
         async with async_session_maker() as session:
             try:
+                post = await PostService.get_post_by_id(
+                    session, post_id, raise_exception=False
+                )
+                if not post:
+                    logger.warning(
+                        f"Post with id {post_id} not found to track view."
+                    )
+                    return
+
                 post_view = await cls.get_post_views_today(session, post_id)
 
                 # if post view does not exist, create it
