@@ -197,19 +197,22 @@ class PostViewService:
     ) -> None:
         async with async_session_maker() as session:
             try:
-                post = await PostService.get_post_by_id(
-                    session, post_id, raise_exception=False
-                )
-                if not post:
-                    logger.warning(
-                        f"Post with id {post_id} not found to track view."
-                    )
-                    return
 
                 post_view = await cls.get_post_views_today(session, post_id)
 
                 # if post view does not exist, create it
                 if not post_view:
+
+                    # if post does not exist, return
+                    post = await PostService.get_post_by_id(
+                        session, post_id, raise_exception=False
+                    )
+                    if not post:
+                        logger.warning(
+                            f"Post with id {post_id} not found to track view."
+                        )
+                        return
+
                     post_view = await cls.create_post_view(session, post_id)
 
                 post_view.view_count += 1
