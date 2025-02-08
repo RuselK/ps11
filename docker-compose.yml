@@ -62,9 +62,9 @@ services:
     container_name: ps11-frontend
     networks:
       - ps11-network
-    volumes:
+    # volumes:
       # - media:/app/public/media
-      - static:/app/public/
+      # - static:/app/public/
 
   nginx:
     build: ./nginx/
