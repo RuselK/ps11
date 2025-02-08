@@ -33,7 +33,7 @@ export function Reviews() {
         </div>
         <div className="pt-20 relative text-center">
           <Button asChild size="lg" variant="secondary" className="bg-secondary hover:bg-secondary/90 rounded-full font-bold text-lg text-white">
-            <Link href="/media/ТИЗЕР_БЗУ_ ООО_ПС.pdf" target="_blank" rel="noopener noreferrer">
+            <Link href="/pdf/ТИЗЕР_БЗУ_ ООО_ПС.pdf" target="_blank" rel="noopener noreferrer">
               Ознакомиться с документацией
             </Link>
           </Button>

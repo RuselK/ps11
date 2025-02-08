@@ -66,6 +66,7 @@ async def create_superuser() -> None:
 
         try:
             await user_manager.get_by_email(config.ADMIN_EMAIL)
+            raise Exception("Superuser already exists.")
         except UserNotExists:
             user_in = UserCreate(
                 email=config.ADMIN_EMAIL,
@@ -75,6 +76,3 @@ async def create_superuser() -> None:
                 is_verified=True,
             )
             await user_manager.create(user_in)
-            logger.info("Superuser created.")
-        else:
-            logger.info("Superuser already exists.")

@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, APIRouter, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -13,24 +11,12 @@ from src.contacts.router import router as contacts_router
 from src.posts.router import router as posts_router
 from src.posts.router import admin_router as admin_posts_router
 from src.images.router import router as images_router
-from src.db import create_db_and_tables
-from src.users.utils import create_superuser
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # TODO: make cli command to create db and tables
-    await create_db_and_tables()
-    # TODO: make cli command to create superuser
-    await create_superuser()
-    yield
 
 
 app = FastAPI(
     debug=config.DEBUG,
     redoc_url="/redoc" if config.DEBUG else None,
     docs_url="/docs" if config.DEBUG else None,
-    lifespan=lifespan,
 )
 
 add_pagination(app)
