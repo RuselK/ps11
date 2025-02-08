@@ -64,6 +64,7 @@ services:
       - ps11-network
     volumes:
       - static:/static
+      - media:/media
 
   nginx:
     build: ./nginx/
