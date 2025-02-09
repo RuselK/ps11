@@ -7,8 +7,6 @@ def create_redis_pool(db: int) -> ConnectionPool:
     return ConnectionPool(
         host=config.REDIS_HOST,
         port=config.REDIS_PORT,
-        username=config.REDIS_USERNAME,
-        password=config.REDIS_PASSWORD,
         db=db,
         encoding="utf-8",
         decode_responses=True,

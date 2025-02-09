@@ -24,8 +24,10 @@ services:
       - ps11-network
 
   redis:
-    build: ./redis
+    image: redis:7.0.5-alpine
     container_name: ps11-redis
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
     ports:
       - "${REDIS_PORT}:6379"
     restart: always
