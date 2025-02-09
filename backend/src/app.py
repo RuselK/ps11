@@ -1,11 +1,16 @@
-from fastapi import FastAPI, BackgroundTasks, status, Depends
+from fastapi import FastAPI, APIRouter, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel, EmailStr
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+from fastapi_pagination import add_pagination
 
 from src.config import config, logger
-from src.mail_service import resend_form_data_to_email
-from src.captcha_service import captcha_dependency
+from src.users.router import user_router, auth_router
+from src.contacts.router import router as contacts_router
+from src.posts.router import router as posts_router
+from src.posts.router import admin_router as admin_posts_router
+from src.images.router import router as images_router
 
 
 app = FastAPI(
@@ -13,6 +18,10 @@ app = FastAPI(
     redoc_url="/redoc" if config.DEBUG else None,
     docs_url="/docs" if config.DEBUG else None,
 )
+
+add_pagination(app)
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.ALLOWED_ORIGINS,
@@ -25,35 +34,42 @@ app.add_middleware(
     allowed_hosts=config.ALLOWED_HOSTS
 )
 
+# API
+api_router = APIRouter()
+api_router.include_router(auth_router)
+api_router.include_router(contacts_router)
+api_router.include_router(posts_router)
+api_router.include_router(admin_posts_router)
+api_router.include_router(user_router)
+api_router.include_router(images_router)
 
-class FormData(BaseModel):
-    name: str
-    phone: str
-    email: EmailStr
-    message: str = None
 
-
-@app.get("/api/health")
+@api_router.get("/health")
 async def health():
-    logger.debug("Received request to check health.")
     return {"status": "ok"}
 
 
-@app.post(
-    "/api/send_form",
-    status_code=status.HTTP_204_NO_CONTENT,
-    dependencies=[Depends(captcha_dependency)],
-)
-async def send_form(
-    form_data: FormData,
-    background_tasks: BackgroundTasks,
-):
-    logger.debug("Received request to send form.")
-    background_tasks.add_task(
-        resend_form_data_to_email,
-        form_data.name,
-        form_data.phone,
-        form_data.email,
-        form_data.message,
+app.include_router(api_router, prefix="/api")
+
+# Media
+if config.DEBUG:
+    app.mount("/media", StaticFiles(directory=config.MEDIA_DIR), name="media")
+
+
+# Exception handlers
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    logger.error(f"Internal server error: {exc}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Internal Server Error"}
     )
-    logger.debug("Completed request to send form.")
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.error(f"HTTP error. code: {exc.status_code}. detail: {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )

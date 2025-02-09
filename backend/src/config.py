@@ -7,11 +7,30 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     DEBUG: bool = False
+    DOMAIN: str
+
+    # Security
+    SECRET: str
+    COOKIE_AGE: int = 3600
+    JWT_AGE: int = 3600
+
+    # Redis
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_USERNAME: str
+    REDIS_PASSWORD: str
+    REDIS_BROKER_DB: int
+
+    # Admin
+    ADMIN_EMAIL: str
+    ADMIN_PASSWORD: str
 
     # Directories
     BASE_DIR: Path = Path(__file__).parent.parent
     LOG_DIR: Path = BASE_DIR / "logs"
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    MEDIA_DIR: Path = BASE_DIR / "media"
+    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
     # Capcha
     SMARTCAPTCHA_SERVER_KEY: str
@@ -25,6 +44,17 @@ class Config(BaseSettings):
     ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     ALLOWED_METHODS: list[str] = ["POST"]
     ALLOWED_HEADERS: list[str] = ["Content-Type"]
+
+    # Database
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: int
+
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"  # noqa
 
     # Email
     MAIL_USERNAME: str
@@ -47,6 +77,7 @@ class Config(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR.parent / ".env",
+        extra="ignore",
     )
 
 
