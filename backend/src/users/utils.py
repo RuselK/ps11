@@ -12,7 +12,7 @@ from fastapi_users.authentication import (
 from fastapi_users.db import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import config, logger
+from src.config import config
 from src.db import get_async_session, async_session_maker
 from .models import User
 from .schemas import UserCreate

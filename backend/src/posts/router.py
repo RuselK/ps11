@@ -1,14 +1,13 @@
-from typing import TypeVar, Optional
+from typing import Optional
 from datetime import date
 
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_pagination.ext.sqlalchemy import paginate
-from fastapi_pagination import Page, Params
-from fastapi_pagination.customization import CustomizedPage, UseParams
 
 from src.users.utils import current_superuser
 from src.db import get_async_session
+from src.pagination import PaginatedPage
 from .schemas import (
     PostCreate,
     PostRead,
@@ -29,21 +28,7 @@ admin_router = APIRouter(
 )
 
 
-T = TypeVar("T")
-
-
-class MyParams(Params):
-    size: int = Query(10, ge=1, le=100, alias="pageSize")
-    page: int = Query(1, ge=1, alias="pageNumber")
-
-
-CustomPage = CustomizedPage[
-    Page[T],
-    UseParams(MyParams),
-]
-
-
-@router.get("/", response_model=CustomPage[PostRead])
+@router.get("/", response_model=PaginatedPage[PostRead])
 async def get_posts(
     session: AsyncSession = Depends(get_async_session),
 ):
@@ -70,7 +55,7 @@ async def collect_post_view():
     return
 
 
-@admin_router.get("/", response_model=CustomPage[PostRead])
+@admin_router.get("/", response_model=PaginatedPage[PostRead])
 async def get_all_posts(
     session: AsyncSession = Depends(get_async_session),
 ):
@@ -81,7 +66,7 @@ async def get_all_posts(
 @admin_router.get("/statistics", response_model=PostStatistics)
 async def get_post_statistics(
     session: AsyncSession = Depends(get_async_session),
-) -> PostStatistics:
+):
     return await PostService.get_post_statistics(session)
 
 
@@ -90,7 +75,7 @@ async def get_post_views_statistics(
     session: AsyncSession = Depends(get_async_session),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-) -> list[PostViewsStatistics]:
+):
     return await PostViewService.get_post_views_statistics(
         session=session,
         start_date=start_date,
@@ -102,7 +87,7 @@ async def get_post_views_statistics(
 async def get_most_viewed_posts(
     limit: int = Query(5, ge=1, le=50),
     session: AsyncSession = Depends(get_async_session),
-) -> list[MostViewedPostRead]:
+):
     return await PostViewService.get_most_viewed_posts(session, limit=limit)
 
 
@@ -127,7 +112,7 @@ async def update_post(
     post_id: int,
     post: PostUpdate,
     session: AsyncSession = Depends(get_async_session),
-) -> PostRead:
+):
     return await PostService.update_post(session, post_id, post)
 
 
@@ -135,5 +120,5 @@ async def update_post(
 async def delete_post(
     post_id: int,
     session: AsyncSession = Depends(get_async_session),
-) -> None:
+):
     await PostService.delete_post(session, post_id)

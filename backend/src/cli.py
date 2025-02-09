@@ -8,7 +8,7 @@ from src.users.utils import create_superuser
 
 
 app = typer.Typer(
-    help="CLI for initializing the FastAPI app database and superuser."
+    help="CLI for initializing app database and superuser."
 )
 
 
@@ -63,7 +63,7 @@ def create_superuser_command():
 @app.command("init")
 def init_all_command():
     """
-    Initialize the database and create the superuser in a single event loop.
+    Initialize the database and create the superuser.
     """
     async def main():
         typer.echo(
