@@ -59,7 +59,11 @@ if config.DEBUG:
 # Exception handlers
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, exc: Exception):
-    logger.error(f"Internal server error: {exc}")
+    logger.error(
+        f"Internal server error. URL: {request.url}. "
+        f"Error: {exc.__class__.__name__}. "
+        f"Message: {str(exc)}"
+    )
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "Internal Server Error"}
@@ -68,7 +72,10 @@ async def exception_handler(request: Request, exc: Exception):
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.error(f"HTTP error. code: {exc.status_code}. detail: {exc.detail}")
+    logger.error(
+        f"HTTP error. URL: {request.url}. code: {exc.status_code}. "
+        f"detail: {exc.detail}"
+    )
     return JSONResponse(
         status_code=exc.status_code,
         content={"detail": exc.detail}
