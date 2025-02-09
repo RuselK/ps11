@@ -61,7 +61,7 @@ if config.DEBUG:
 async def exception_handler(request: Request, exc: Exception):
     logger.error(
         f"Internal server error. URL: {request.url}. "
-        f"Error: {exc.__class__.__name__}. "
+        f"Error: {exc.__class__}. "
         f"Message: {str(exc)}"
     )
     return JSONResponse(
