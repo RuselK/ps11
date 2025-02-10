@@ -52,7 +52,7 @@ export default async function BlogPostPage({
             <BreadcrumbSeparator>
               <ChevronRight className="h-4 w-4" />
             </BreadcrumbSeparator>
-            <BreadcrumbItem>{post.title}</BreadcrumbItem>
+            <BreadcrumbItem className="break-words">{post.title}</BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <article className="max-w-3xl mx-auto">
@@ -62,7 +62,7 @@ export default async function BlogPostPage({
             {new Date(post.created_at).toLocaleDateString()}
           </div>
           <div
-            className="prose prose-lg max-w-none"
+            className="post-content prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>
