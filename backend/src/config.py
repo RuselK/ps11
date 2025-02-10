@@ -17,8 +17,6 @@ class Config(BaseSettings):
     # Redis
     REDIS_HOST: str
     REDIS_PORT: int
-    REDIS_USERNAME: str
-    REDIS_PASSWORD: str
     REDIS_BROKER_DB: int
 
     # Admin

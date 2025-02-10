@@ -23,7 +23,5 @@ services:
     container_name: ps11-redis
     environment:
       - REDIS_HOST=${REDIS_HOST}
-      - REDIS_USERNAME=${REDIS_USERNAME}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - ${REDIS_PORT}:6379
