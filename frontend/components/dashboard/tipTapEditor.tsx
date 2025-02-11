@@ -1,13 +1,15 @@
 "use client"
 
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
+import Link from "@tiptap/extension-link"
 import { Button } from "@/components/ui/button"
-import { Bold, Italic, List, ListOrdered, Heading2, Heading3, Heading4, ImageIcon } from "lucide-react"
+import { Bold, Italic, List, ListOrdered, Heading2, Heading3, Heading4, ImageIcon, LinkIcon } from "lucide-react"
 import { uploadImage as serviceUploadImage } from "@/services/imagesService"
 import { Skeleton } from "@/components/ui/skeleton"
+import { LinkDialog } from "./LinkDialog"
 
 interface TiptapEditorProps {
   content: string
@@ -15,27 +17,32 @@ interface TiptapEditorProps {
 }
 
 export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
-  // 1. Initialize the editor
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false)
+
   const editor = useEditor({
-    extensions: [StarterKit, Image],
+    extensions: [
+      StarterKit,
+      Image,
+      Link.configure({
+        openOnClick: false,
+      }),
+    ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
     },
   })
 
-  // 2. Single function to handle file -> imagesService.uploadImage
   const handleUploadImage = useCallback(async (file: File) => {
     try {
       const response = await serviceUploadImage(file)
       return response.data.url
     } catch (error) {
-      console.error("Ошибка при загрузке изображения:", error)
+      console.error("Error uploading image:", error)
       return null
     }
   }, [])
 
-  // 3. Prompt for file -> upload -> insert into editor
   const addImage = useCallback(() => {
     const input = document.createElement("input")
     input.type = "file"
@@ -53,7 +60,19 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     input.click()
   }, [editor, handleUploadImage])
 
-  // 4. Handle paste events (for images)
+  const addLink = useCallback(() => {
+    setIsLinkDialogOpen(true)
+  }, [])
+
+  const handleLinkSubmit = useCallback(
+    (url: string) => {
+      if (url) {
+        editor?.chain().focus().setLink({ href: url }).run()
+      }
+    },
+    [editor],
+  )
+
   const handlePaste = useCallback(
     (event: ClipboardEvent) => {
       const items = event.clipboardData?.items
@@ -75,10 +94,9 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         }
       }
     },
-    [editor, handleUploadImage]
+    [editor, handleUploadImage],
   )
 
-  // 5. Add paste event listener once
   useEffect(() => {
     if (!editor) return
 
@@ -91,12 +109,10 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     }
   }, [editor, handlePaste])
 
-  // 6. Render nothing if editor is not ready
   if (!editor) {
     return <Skeleton className="w-full h-[252px]" />
   }
 
-  // 7. Render editor + toolbar
   return (
     <div className="border rounded-md">
       <div className="flex flex-wrap gap-2 p-2 border-b">
@@ -163,16 +179,16 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={addImage}
-        >
+        <Button type="button" variant="outline" size="icon" onClick={addLink}>
+          <LinkIcon className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="outline" size="icon" onClick={addImage}>
           <ImageIcon className="h-4 w-4" />
         </Button>
       </div>
       <EditorContent editor={editor} className="p-4 min-h-[200px]" />
+      <LinkDialog isOpen={isLinkDialogOpen} onClose={() => setIsLinkDialogOpen(false)} onSubmit={handleLinkSubmit} />
     </div>
   )
 }
+

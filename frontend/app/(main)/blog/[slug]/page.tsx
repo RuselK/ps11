@@ -62,7 +62,7 @@ export default async function BlogPostPage({
             {new Date(post.created_at).toLocaleDateString()}
           </div>
           <div
-            className="post-content prose prose-lg max-w-none"
+            className="post-content prose prose-lg max-w-none break-words"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>

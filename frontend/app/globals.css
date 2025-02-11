@@ -25,53 +25,69 @@ body {
   :first-child {
     margin-top: 0;
   }
+  p {
+    @apply text-justify;
+  }
+  p:not(:last-child) {
+    @apply mb-2;
+  }
 
-  /* Heading styles */
-  h1, 
-  h2, 
-  h3, 
-  h4, 
-  h5, 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
   h6 {
-    line-height: 1.1;
-    margin-top: 2.5rem;
-    text-wrap: pretty;
+    @apply leading-[1.1] my-4;
   }
 
-  h1, 
+  h1,
   h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    @apply mt-10 mb-6;
   }
 
-  h1 { 
-    font-size: 1.4rem; 
+  h1 {
+    @apply text-[2rem];
   }
 
-  h2 { 
-    font-size: 1.2rem; 
+  h2 {
+    @apply text-[1.75rem];
   }
 
-  h3 { 
-    font-size: 1.1rem; 
+  h3 {
+    @apply text-[1.5rem];
   }
 
-  h4, 
-  h5, 
-  h6 { 
-    font-size: 1rem; 
+  h4 {
+    @apply text-[1.25rem];
   }
 
-  /* List styles */
-  ul, 
+  h5 {
+    @apply text-[1.125rem];
+  }
+
+  h6 {
+    @apply text-[1rem];
+  }
+
+  ul {
+    @apply px-4 mt-5 mb-5 mr-4;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+  }
   ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
-    
-    li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
+    @apply px-4 mt-5 mb-5 mr-4;
+    padding-left: 1.5rem;
+    list-style-type: decimal;
+  }
+  img {
+    @apply block mx-auto max-w-full h-auto my-6 rounded-lg shadow-md;
+  }
+  a {
+    @apply text-blue-500 underline cursor-pointer;
+  }
+  a:hover {
+    @apply text-blue-600;
   }
 }
 
@@ -134,73 +150,13 @@ body {
   .post-content img {
     @apply block mx-auto max-w-full h-auto my-6 rounded-lg shadow-md;
   }
-
-
-  /* ProseMirror styles */
-  .ProseMirror:focus {
-    @apply outline-none;
+  .post-content a {
+    @apply text-blue-500 underline cursor-pointer;
   }
-  .ProseMirror ul {
-    @apply list-disc pl-6;
-  }
-  .ProseMirror ol {
-    @apply list-decimal pl-6;
-  }
-
-  /* Tiptap styling */
-  .tiptap > :first-child {
-    @apply mt-0;
-  }
-
-  /* Common heading styles for all headings in .tiptap */
-  .tiptap h1,
-  .tiptap h2,
-  .tiptap h3,
-  .tiptap h4,
-  .tiptap h5,
-  .tiptap h6 {
-    @apply leading-[1.1] mt-10;
-  }
-
-  /* Extra spacing for h1 and h2 */
-  .tiptap h1,
-  .tiptap h2 {
-    @apply mt-14 mb-6;
-  }
-
-  /* Font sizes for headings */
-  .tiptap h1 {
-    @apply text-[1.4rem];
-  }
-  .tiptap h2 {
-    @apply text-[1.2rem];
-  }
-  .tiptap h3 {
-    @apply text-[1.1rem];
-  }
-  .tiptap h4,
-  .tiptap h5,
-  .tiptap h6 {
-    @apply text-[1rem];
-  }
-
-  /* List styles for ul and ol within .tiptap */
-  .tiptap ul,
-  .tiptap ol {
-    @apply px-4 mt-5 mb-5 mr-4 ml-[0.4rem];
-  }
-
-  /* Nested li p styling for lists */
-  .tiptap ul li p,
-  .tiptap ol li p {
-    @apply mt-[0.25em] mb-[0.25em];
-  }
-  .tiptap img {
-    @apply block mx-auto max-w-full h-auto my-6 rounded-lg shadow-md;
+  .post-content a:hover {
+    @apply text-blue-600;
   }
 }
-
-
 
 @layer base {
   :root {
